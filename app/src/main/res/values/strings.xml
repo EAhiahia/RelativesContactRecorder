@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">人亲记录器</string>
+
+    <string name="finish_input">完成</string>
+    <string name="name">哪家</string>
+    <string name="money">给了多少</string>
+    <string name="reason">什么事</string>
+    <string name="phone">手机号</string>
+    <string name="email">邮箱</string>
+    <string name="additional">补充</string>
+    <string name="add_exchanges">添加人亲来往信息</string>
+    <string name="save">保存</string>
+    <string name="content_description_save">保存信息</string>
+    <string name="base_information">基本信息</string>
+    <string name="additional_information">额外信息（可选）</string>
+    <string name="save_success">保存成功</string>
+    <string name="undo">重新编辑</string>
+    <string name="detail_example_title">联系人名字</string>
+    <string name="delete">删除</string>
+    <string name="content_description_delete_contact">删除当前联系人信息</string>
+    <string name="content_description_share_contact">分享联系人信息</string>
+    <string name="detail_card_title">收到的钱</string>
+    <string name="what_thing">四亲戚家结婚</string>
+    <string name="how_much">200元</string>
+    <string name="other_gave_money">添加</string>
+    <string name="sample_name">四阿姨家</string>
+    <string name="title_image">标题栏的背景</string>
+</resources>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="money_items">
+        <item>"100元"</item>
+        <item>"200元"</item>
+        <item>"300元"</item>
+        <item>"500元"</item>
+        <item>"1000元"</item>
+        <item>"2000元"</item>
+    </string-array>
+    <string-array name="things_items">
+        <item>"喜事"</item>
+        <item>"搬家"</item>
+        <item>"满月"</item>
+        <item>"满岁"</item>
+        <item>"生小孩儿"</item>
+        <item>"丧事"</item>
+    </string-array>
+</resources>
