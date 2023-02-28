@@ -4,7 +4,8 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.limboooo.contactrecorder.activity.ProjectApplication
-import com.limboooo.contactrecorder.repository.room.entity.*
+import com.limboooo.contactrecorder.repository.room.entity.normal.NormalDataSet
+import com.limboooo.contactrecorder.repository.room.entity.whole.*
 
 @Database(
     entities = [RelativesInfoWhole::class, RelativesBaseInfo::class, Phones::class, Emails::class, Exchanges::class, NormalDataSet::class],

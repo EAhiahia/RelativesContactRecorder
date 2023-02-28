@@ -1,8 +1,9 @@
 package com.limboooo.contactrecorder.repository.room
 
 import androidx.room.*
-import com.limboooo.contactrecorder.repository.room.entity.NormalDataSet
-import com.limboooo.contactrecorder.repository.room.entity.RelativesInfoWhole
+import com.limboooo.contactrecorder.repository.room.entity.normal.NormalDataSet
+import com.limboooo.contactrecorder.repository.room.entity.whole.RelativesBaseInfo
+import com.limboooo.contactrecorder.repository.room.entity.whole.RelativesInfoWhole
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -10,7 +11,20 @@ interface ProjectDao {
 
     @Transaction
     @Query("SELECT * FROM RelativesBaseInfo")
-    suspend fun getAllContact(): Flow<List<RelativesInfoWhole>>
+    suspend fun getAll(): Flow<List<RelativesInfoWhole>>
+
+    //返回值代表删除的行数
+    //todo 不知道怎么删除关联项
+    @Transaction
+    @Delete
+    suspend fun deleteFromAll(vararg contact: RelativesBaseInfo): Int
+
+    @Transaction
+    @Query("SELECT * FROM NormalKey")
+    suspend fun getNormal():Flow<List<NormalDataSet>>
+
+    
+
 
     @Transaction
     @Query("SELECT * FROM RelativesBaseInfo WHERE name = :name")

@@ -3,9 +3,7 @@ package com.limboooo.contactrecorder.fragment
 
 import android.icu.text.DateFormat
 import android.os.Bundle
-import android.provider.ContactsContract.CommonDataKinds.Phone
 import android.text.InputType
-import android.text.method.TextKeyListener.clear
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,8 +20,9 @@ import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.limboooo.contactrecorder.R
 import com.limboooo.contactrecorder.databinding.DialogAddContactBinding
-import com.limboooo.contactrecorder.repository.room.ProjectViewModel
+import com.limboooo.contactrecorder.repository.ProjectViewModel
 import com.limboooo.contactrecorder.repository.room.entity.*
+import com.limboooo.contactrecorder.repository.room.entity.whole.*
 import com.limboooo.contactrecorder.tools.showShortToast
 import kotlinx.coroutines.launch
 import java.util.*

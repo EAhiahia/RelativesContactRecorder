@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.limboooo.contactrecorder.repository.room.ProjectViewModel" />
+            type="com.limboooo.contactrecorder.repository.ProjectViewModel" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout

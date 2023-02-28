@@ -1,39 +1,35 @@
-package com.limboooo.contactrecorder.repository.room.entity
+package com.limboooo.contactrecorder.repository.room.entity.normal
 
-import android.os.Parcelable
 import androidx.room.Embedded
-import androidx.room.Entity
-import androidx.room.PrimaryKey
 import androidx.room.Relation
-import kotlinx.parcelize.Parcelize
+import com.limboooo.contactrecorder.repository.room.entity.whole.Emails
+import com.limboooo.contactrecorder.repository.room.entity.whole.Phones
 
-@Parcelize
-@Entity
 data class NormalDataSet(
-    @Embedded val keys: NormalKeys?,
+    @Embedded val key: NormalKey,
     @Relation(
         parentColumn = "uid",
         entityColumn = "ownerUid"
     )
-    val names: MutableList<String>,
+    val names: List<Names>,
     @Relation(
         parentColumn = "uid",
         entityColumn = "ownerUid"
     )
-    val moneys: MutableList<String>,
+    val moneys: List<Moneys>,
     @Relation(
         parentColumn = "uid",
         entityColumn = "ownerUid"
     )
-    val things: MutableList<String>,
+    val things: List<Things>,
     @Relation(
         parentColumn = "uid",
         entityColumn = "ownerUid"
     )
-    val phones: MutableList<String>,
+    val phones: List<Phones>,
     @Relation(
         parentColumn = "uid",
         entityColumn = "ownerUid"
     )
-    val emails: MutableList<String>
-) : Parcelable
+    val emails: List<Emails>
+)

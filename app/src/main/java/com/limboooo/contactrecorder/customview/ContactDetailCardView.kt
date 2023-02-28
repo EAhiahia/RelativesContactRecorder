@@ -16,7 +16,6 @@ class ContactDetailCardView(context: Context, attrs: AttributeSet? = null) :
         val view =
             LayoutInflater.from(context).inflate(R.layout.card_contact_detail, this, false)
         binding = CardContactDetailBinding.bind(view)
-
     }
 
 }

@@ -11,7 +11,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.limboooo.contactrecorder.R
 import com.limboooo.contactrecorder.databinding.FragmentContactDetailBinding
-import com.limboooo.contactrecorder.repository.room.ProjectViewModel
+import com.limboooo.contactrecorder.repository.ProjectViewModel
 
 class FragmentContactDetail : Fragment() {
 
