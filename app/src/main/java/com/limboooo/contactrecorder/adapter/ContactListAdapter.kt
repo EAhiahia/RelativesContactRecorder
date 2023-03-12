@@ -53,6 +53,9 @@ class ContactListAdapter(private val viewModel: ProjectViewModel) :
                 name.text = entity.name
                 received.text = entity.moneyReceivedWhole.toString()
                 gave.text = entity.moneyGaveWhole.toString()
+                item.setOnClickListener {
+                    it.navigator.push(FragmentContactDetail::class)
+                }
                 deleteButton.setOnClickListener {
                     viewModel.mainListDataBackup.remove(entity)
                     viewModel.deletedList.add(entity)
@@ -65,7 +68,7 @@ class ContactListAdapter(private val viewModel: ProjectViewModel) :
                             else {
                                 for (index in position - 1 downTo 0) {
                                     if (viewModel.mainListDataBackup.contains(viewModel.mainListData.value[index])) {
-                                        if (index + 1 != viewModel.dataListBackup.size)
+                                        if (index + 1 != viewModel.mainListDataBackup.size)
                                             viewModel.mainListDataBackup.add(index + 1, entity)
                                         else {
                                             viewModel.mainListDataBackup.add(entity)
@@ -83,8 +86,7 @@ class ContactListAdapter(private val viewModel: ProjectViewModel) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListViewHolder {
-        val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.item_contact_list, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_contact_list, parent, false)
         val binding = ItemContactListBinding.bind(view)
         return ListViewHolder(binding)
     }

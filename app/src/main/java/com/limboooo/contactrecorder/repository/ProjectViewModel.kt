@@ -1,6 +1,7 @@
 package com.limboooo.contactrecorder.repository
 
 import android.content.Context
+import android.icu.text.SimpleDateFormat
 import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -11,15 +12,16 @@ import androidx.lifecycle.viewModelScope
 import com.github.fragivity.NavOptions
 import com.limboooo.contactrecorder.repository.room.ProjectDatabase
 import com.limboooo.contactrecorder.repository.room.entity.normal.NormalDataSet
-import com.limboooo.contactrecorder.repository.room.entity.whole.RelativesBaseInfo
-import com.limboooo.contactrecorder.repository.room.entity.whole.RelativesInfoWhole
+import com.limboooo.contactrecorder.repository.room.entity.normal.NormalKey
+import com.limboooo.contactrecorder.repository.room.entity.whole.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.util.*
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "data")
-const val disableLog = true
+const val disableLog = false
 
 fun String.showLog(tag: String = "myapp") {
     if (!disableLog) Log.d(tag, this)
@@ -32,6 +34,8 @@ fun NavOptions.initAnimator() {
     popExitAnim = R.animator.fragment_close_exit
 }
 
+const val normalDataOwnerId = 1000000
+
 
 /**
  * 每次更新mutableStateFlow.value会导致走流程，相当于emit
@@ -39,7 +43,20 @@ fun NavOptions.initAnimator() {
  */
 class ProjectViewModel : ViewModel() {
 
+    var targetData: RelativesInfoWhole = resetTargetData()
 
+    private fun resetTargetData(): RelativesInfoWhole {
+        return RelativesInfoWhole(
+            RelativesBaseInfo(0, "", 0, 0),
+            mutableListOf(Phones(0, 0, "")),
+            mutableListOf(Emails(0, 0, "")),
+            mutableListOf(Exchanges(0, 0, today, "", "")),
+            mutableListOf(Exchanges(0, 0, today, "", ""))
+        )
+    }
+
+    var today: String = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+    var isHaveContent = false
     var deleteMode: Boolean = false
 
     //数据库的操作列表
@@ -47,44 +64,78 @@ class ProjectViewModel : ViewModel() {
 
     //全部数据
     private val _dataList: MutableStateFlow<List<RelativesInfoWhole>> =
-        MutableStateFlow(mutableListOf())
-    val dataList: StateFlow<List<RelativesInfoWhole>> = _dataList
-    val dataListBackup: MutableList<RelativesInfoWhole> by lazy { mutableListOf() }
+        MutableStateFlow(listOf())
+    val dataList = _dataList.asStateFlow()
 
     //下拉栏数据
-    private val _normalData = MutableStateFlow<List<NormalDataSet>>(mutableListOf())
-    val normalData: StateFlow<List<NormalDataSet>> = _normalData
-    val normalDataBackup: MutableList<NormalDataSet> by lazy { mutableListOf() }
+    private val _normalData = MutableStateFlow(
+        NormalDataSet(
+            NormalKey(1, ""),
+            listOf(), listOf(), listOf(), listOf(), listOf()
+        )
+    )
+    val normalData = _normalData.asStateFlow()
 
     //主页面的list
     private val _mainListData: MutableStateFlow<List<RelativesBaseInfo>> =
-        MutableStateFlow(mutableListOf())
-    val mainListData: StateFlow<List<RelativesBaseInfo>> = _mainListData
-    val mainListDataBackup: MutableList<RelativesBaseInfo> by lazy { mutableListOf() }
+        MutableStateFlow(listOf())
+    val mainListData = _mainListData.asStateFlow()
+    val mainListDataBackup by lazy { mutableListOf<RelativesBaseInfo>() }
 
     //被删除的名单
-    val deletedList: MutableList<RelativesBaseInfo> by lazy {
-        mutableListOf()
-    }
+    val deletedList: MutableList<RelativesBaseInfo> by lazy { mutableListOf() }
+    private val _names = MutableStateFlow(listOf<String>())
+    private val _moneys = MutableStateFlow(listOf<String>())
+    private val _things = MutableStateFlow(listOf<String>())
+    private val _emails = MutableStateFlow(listOf<String>())
+    private val _phones = MutableStateFlow(listOf<String>())
+    val names = _names.asStateFlow()
+    val moneys = _moneys.asStateFlow()
+    val things = _things.asStateFlow()
+    val emails = _emails.asStateFlow()
+    val phones = _phones.asStateFlow()
+
 
     init {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             launch {
-                dao.getAll().collect {
-                    _dataList.value = it
-                    dataListBackup.run {
+
+            }
+            launch {
+                dao.getMainList().collect {
+                    _mainListData.value = it
+                    mainListDataBackup.run {
                         clear()
                         addAll(it)
                     }
                 }
             }
             launch {
-                dao.getNormal().collect {
-                    _normalData.value = it
-                    normalDataBackup.run {
-                        clear()
-                        addAll(it)
-                    }
+
+            }
+            launch {
+                dao.getNormalNames().collect {
+                    _names.value = it
+                }
+            }
+            launch {
+                dao.getNormalEmails().collect {
+                    _emails.value = it
+                }
+            }
+            launch {
+                dao.getNormalMoneys().collect {
+                    _moneys.value = it
+                }
+            }
+            launch {
+                dao.getNormalPhones().collect {
+                    _phones.value = it
+                }
+            }
+            launch {
+                dao.getNormalThings().collect {
+                    _things.value = it
                 }
             }
         }
@@ -95,8 +146,8 @@ class ProjectViewModel : ViewModel() {
             return
         }
         viewModelScope.launch(Dispatchers.IO) {
-            deletedList.forEach {
-                dao.deleteFromAll(it)
+            deletedList.forEach { base ->
+
             }
         }
     }

@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.addCallback
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -34,15 +35,14 @@ class FragmentContactList : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         requireActivity().onBackPressedDispatcher.run {
-            addCallback(viewLifecycleOwner){
-                if(viewModel.deleteMode){
-                    myAdapter.submitList(viewModel.mainListData.value)
-                    viewModel.mainListDataBackup.run {
-                        clear()
-                        addAll(viewModel.mainListData.value)
+            addCallback(viewLifecycleOwner) {
+                if (viewModel.deleteMode) {
+                    binding.toolbar.run {
+                        menu.getItem(0).isVisible = false
+                        navigationIcon = null
                     }
+                    myAdapter.submitList(viewModel.mainListData.value)
                     Toast.makeText(requireContext(), "已撤销所有修改", Toast.LENGTH_SHORT).show()
-//                    binding.finish.visibility = View.GONE
                     binding.contactList.children.forEach {
                         it.findViewById<MaterialButton>(R.id.delete_button).visibility = View.GONE
                     }
@@ -85,10 +85,18 @@ class FragmentContactList : Fragment() {
 
     override fun onResume() {
         if (viewModel.deleteMode) {
+            binding.toolbar.run {
+                menu.getItem(0).isVisible = true
+                navigationIcon = ResourcesCompat.getDrawable(resources, R.drawable.ic_close, null)
+            }
             binding.contactList.children.forEach {
                 it.findViewById<MaterialButton>(R.id.delete_button).visibility = View.VISIBLE
             }
         } else {
+            binding.toolbar.run {
+                menu.getItem(0).isVisible = false
+                navigationIcon = null
+            }
             binding.contactList.children.forEach {
                 it.findViewById<MaterialButton>(R.id.delete_button).visibility = View.VISIBLE
             }

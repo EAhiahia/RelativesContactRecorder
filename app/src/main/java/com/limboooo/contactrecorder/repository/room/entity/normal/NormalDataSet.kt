@@ -8,28 +8,28 @@ import com.limboooo.contactrecorder.repository.room.entity.whole.Phones
 data class NormalDataSet(
     @Embedded val key: NormalKey,
     @Relation(
-        parentColumn = "uid",
-        entityColumn = "ownerUid"
+        parentColumn = "id",
+        entityColumn = "ownerId"
     )
     val names: List<Names>,
     @Relation(
-        parentColumn = "uid",
-        entityColumn = "ownerUid"
+        parentColumn = "id",
+        entityColumn = "ownerId"
     )
     val moneys: List<Moneys>,
     @Relation(
-        parentColumn = "uid",
-        entityColumn = "ownerUid"
+        parentColumn = "id",
+        entityColumn = "ownerId"
     )
     val things: List<Things>,
     @Relation(
-        parentColumn = "uid",
-        entityColumn = "ownerUid"
+        parentColumn = "id",
+        entityColumn = "ownerId"
     )
     val phones: List<Phones>,
     @Relation(
-        parentColumn = "uid",
-        entityColumn = "ownerUid"
+        parentColumn = "id",
+        entityColumn = "ownerId"
     )
     val emails: List<Emails>
 )

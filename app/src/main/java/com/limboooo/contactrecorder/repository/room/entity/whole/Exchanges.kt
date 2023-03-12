@@ -6,8 +6,8 @@ import androidx.room.PrimaryKey
 //人亲（钱）往来的信息
 @Entity
 data class Exchanges(
-    @PrimaryKey(true) val uid: Int,
-    val ownerUid: Int,
+    @PrimaryKey(true) val id: Int,
+    val ownerId: Int,
     val time: String,
     val thing: String,
     val money: String

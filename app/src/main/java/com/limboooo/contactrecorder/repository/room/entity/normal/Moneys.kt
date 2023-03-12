@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class Moneys(
-    @PrimaryKey(true) val uid: Int,
-    val ownerUid: Int,
+    @PrimaryKey(true) val id: Int,
+    val ownerId: Int,
     val money: Int
 )

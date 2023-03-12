@@ -6,12 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.limboooo.contactrecorder.R
 import com.limboooo.contactrecorder.databinding.FragmentContactDetailBinding
 import com.limboooo.contactrecorder.repository.ProjectViewModel
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 class FragmentContactDetail : Fragment() {
 
@@ -63,7 +66,7 @@ class FragmentContactDetail : Fragment() {
             detailTitle.title = viewModel.targetContact.baseInfo.name
             cardReceived.apply {
                 cardTitle.text = "收到的钱"
-                if(viewModel.targetContact.moneyReceived.isEmpty()) {
+                if (viewModel.targetContact.moneyReceived.isEmpty()) {
                     listEmpty.visibility = View.VISIBLE
                     listReceivedDetail.visibility = View.GONE
                 }

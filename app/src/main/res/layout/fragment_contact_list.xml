@@ -12,6 +12,7 @@
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
+            app:menu="@menu/fragment_add_exchanges_menu"
             android:layout_height="?attr/actionBarSize"
             app:title="@string/app_name" />
 

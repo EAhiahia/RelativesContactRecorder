@@ -4,11 +4,17 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.limboooo.contactrecorder.activity.ProjectApplication
-import com.limboooo.contactrecorder.repository.room.entity.normal.NormalDataSet
-import com.limboooo.contactrecorder.repository.room.entity.whole.*
+import com.limboooo.contactrecorder.repository.room.entity.normal.Moneys
+import com.limboooo.contactrecorder.repository.room.entity.normal.Names
+import com.limboooo.contactrecorder.repository.room.entity.normal.NormalKey
+import com.limboooo.contactrecorder.repository.room.entity.normal.Things
+import com.limboooo.contactrecorder.repository.room.entity.whole.Emails
+import com.limboooo.contactrecorder.repository.room.entity.whole.Exchanges
+import com.limboooo.contactrecorder.repository.room.entity.whole.Phones
+import com.limboooo.contactrecorder.repository.room.entity.whole.RelativesBaseInfo
 
 @Database(
-    entities = [RelativesInfoWhole::class, RelativesBaseInfo::class, Phones::class, Emails::class, Exchanges::class, NormalDataSet::class],
+    entities = [RelativesBaseInfo::class, NormalKey::class, Moneys::class, Names::class, Things::class, Phones::class, Emails::class, Exchanges::class],
     version = 1
 )
 abstract class ProjectDatabase : RoomDatabase() {

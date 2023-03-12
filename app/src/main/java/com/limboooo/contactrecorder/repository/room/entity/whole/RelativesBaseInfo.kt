@@ -9,7 +9,7 @@ import androidx.room.PrimaryKey
  */
 @Entity
 data class RelativesBaseInfo(
-    @PrimaryKey(true)  val uid: Int,
+    @PrimaryKey(true)  val id: Int,
     //基本信息
     val name: String,
     var moneyReceivedWhole: Int,

@@ -6,23 +6,23 @@ import androidx.room.Relation
 data class RelativesInfoWhole(
     @Embedded val baseInfo: RelativesBaseInfo,
     @Relation(
-        parentColumn = "uid",
-        entityColumn = "ownerUid"
+        parentColumn = "id",
+        entityColumn = "ownerId"
     )
-    val phones: List<Phones>,
+    val phones: MutableList<Phones>,
     @Relation(
-        parentColumn = "uid",
-        entityColumn = "ownerUid"
+        parentColumn = "id",
+        entityColumn = "ownerId"
     )
-    val emails: List<Emails>,
+    val emails: MutableList<Emails>,
     @Relation(
-        parentColumn = "uid",
-        entityColumn = "ownerUid"
+        parentColumn = "id",
+        entityColumn = "ownerId"
     )
-    val moneyReceived: List<Exchanges>,
+    val moneyReceived: MutableList<Exchanges>,
     @Relation(
-        parentColumn = "uid",
-        entityColumn = "ownerUid"
+        parentColumn = "id",
+        entityColumn = "ownerId"
     )
-    val moneyGave: List<Exchanges>
+    val moneyGave: MutableList<Exchanges>
 )
