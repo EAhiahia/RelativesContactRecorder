@@ -1,6 +1,7 @@
 package com.limboooo.contactrecorder.repository.room.entity.normal
 
 import androidx.room.Embedded
+import androidx.room.Entity
 import androidx.room.Relation
 import com.limboooo.contactrecorder.repository.room.entity.whole.Emails
 import com.limboooo.contactrecorder.repository.room.entity.whole.Phones

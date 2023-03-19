@@ -8,13 +8,10 @@ import com.limboooo.contactrecorder.repository.room.entity.normal.Moneys
 import com.limboooo.contactrecorder.repository.room.entity.normal.Names
 import com.limboooo.contactrecorder.repository.room.entity.normal.NormalKey
 import com.limboooo.contactrecorder.repository.room.entity.normal.Things
-import com.limboooo.contactrecorder.repository.room.entity.whole.Emails
-import com.limboooo.contactrecorder.repository.room.entity.whole.Exchanges
-import com.limboooo.contactrecorder.repository.room.entity.whole.Phones
-import com.limboooo.contactrecorder.repository.room.entity.whole.RelativesBaseInfo
+import com.limboooo.contactrecorder.repository.room.entity.whole.*
 
 @Database(
-    entities = [RelativesBaseInfo::class, NormalKey::class, Moneys::class, Names::class, Things::class, Phones::class, Emails::class, Exchanges::class],
+    entities = [Moneys::class, Names::class, NormalKey::class, Things::class, Emails::class, MoneyGave::class, MoneyReceived::class, Phones::class, RelativesBaseInfo::class],
     version = 1
 )
 abstract class ProjectDatabase : RoomDatabase() {

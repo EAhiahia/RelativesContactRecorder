@@ -13,8 +13,9 @@ import com.google.android.material.snackbar.Snackbar
 import com.limboooo.contactrecorder.R
 import com.limboooo.contactrecorder.databinding.FragmentContactDetailBinding
 import com.limboooo.contactrecorder.repository.ProjectViewModel
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class FragmentContactDetail : Fragment() {
 
@@ -32,6 +33,11 @@ class FragmentContactDetail : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        runBlocking {
+            lifecycleScope.launch(Dispatchers.IO) {
+                viewModel.loadTargetDetail(requireArguments().getInt("position"))
+            }
+        }
         binding.detailTitle.apply {
             setNavigationOnClickListener {
                 findNavController().navigateUp()
@@ -63,10 +69,10 @@ class FragmentContactDetail : Fragment() {
 
         //TODO 载入viewmodel.detailTarget数据
         binding.apply {
-            detailTitle.title = viewModel.targetContact.baseInfo.name
+            detailTitle.title = viewModel.targetData.baseInfo.name
             cardReceived.apply {
                 cardTitle.text = "收到的钱"
-                if (viewModel.targetContact.moneyReceived.isEmpty()) {
+                if (viewModel.targetData.moneyReceived.isEmpty()) {
                     listEmpty.visibility = View.VISIBLE
                     listReceivedDetail.visibility = View.GONE
                 }

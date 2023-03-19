@@ -7,7 +7,7 @@
     android:paddingEnd="16dp">
 
     <TextView
-        android:id="@+id/what"
+        android:id="@+id/thing"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/what_thing"
@@ -16,22 +16,22 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/money_container"
+        android:id="@+id/money"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/how_much"
-        app:layout_constraintBottom_toBottomOf="@id/what"
+        app:layout_constraintBottom_toBottomOf="@id/thing"
         app:layout_constraintEnd_toStartOf="@id/state"
-        app:layout_constraintTop_toTopOf="@id/what" />
+        app:layout_constraintTop_toTopOf="@id/thing" />
 
     <com.google.android.material.checkbox.MaterialCheckBox
         android:id="@+id/state"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:buttonIcon="@drawable/ic_check"
-        app:layout_constraintBottom_toBottomOf="@id/what"
+        app:layout_constraintBottom_toBottomOf="@id/thing"
         app:layout_constraintEnd_toStartOf="@id/delete"
-        app:layout_constraintTop_toTopOf="@id/what" />
+        app:layout_constraintTop_toTopOf="@id/thing" />
 
     <ImageView
         android:id="@+id/delete"
@@ -39,9 +39,9 @@
         android:layout_height="wrap_content"
         android:clickable="true"
         android:focusable="true"
-        app:layout_constraintBottom_toBottomOf="@id/what"
+        app:layout_constraintBottom_toBottomOf="@id/thing"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/what"
+        app:layout_constraintTop_toTopOf="@id/thing"
         app:srcCompat="@drawable/ic_delete" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

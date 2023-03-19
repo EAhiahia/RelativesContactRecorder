@@ -14,13 +14,14 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.github.fragivity.dialog.showDialog
 import com.github.fragivity.navigator
+import com.github.fragivity.push
 import com.google.android.material.button.MaterialButton
 import com.limboooo.contactrecorder.R
 import com.limboooo.contactrecorder.adapter.ContactListAdapter
 import com.limboooo.contactrecorder.databinding.FragmentContactListBinding
 import com.limboooo.contactrecorder.repository.ProjectViewModel
+import com.limboooo.contactrecorder.repository.initAnimator
 import kotlinx.coroutines.launch
 
 class FragmentContactList : Fragment() {
@@ -49,7 +50,7 @@ class FragmentContactList : Fragment() {
                     viewModel.deleteMode = false
                 } else {
                     requireActivity().finish()
-                    viewModel.save()
+                    viewModel.saveAll()
                     isEnabled = false
                     onBackPressed()
                 }
@@ -78,7 +79,10 @@ class FragmentContactList : Fragment() {
             adapter = myAdapter
         }
         binding.add.setOnClickListener {
-            navigator.showDialog(DialogAddExchanges::class)
+//            navigator.showDialog(DialogAddExchanges::class)
+            navigator.push(DialogAddExchanges::class) {
+                initAnimator()
+            }
         }
         return binding.root
     }

@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:hint="电话">
 
     <com.google.android.material.textfield.MaterialAutoCompleteTextView
-        android:layout_width="match_parent"
         android:id="@+id/phone"
-        android:layout_height="wrap_content"
-        android:text="电话" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 </com.google.android.material.textfield.TextInputLayout>

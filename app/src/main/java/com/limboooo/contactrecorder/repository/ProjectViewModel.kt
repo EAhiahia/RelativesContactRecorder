@@ -1,26 +1,24 @@
 package com.limboooo.contactrecorder.repository
 
-import android.content.Context
-import android.icu.text.SimpleDateFormat
 import android.util.Log
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStore
 import androidx.fragment.R
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.fragivity.NavOptions
 import com.limboooo.contactrecorder.repository.room.ProjectDatabase
-import com.limboooo.contactrecorder.repository.room.entity.normal.NormalDataSet
-import com.limboooo.contactrecorder.repository.room.entity.normal.NormalKey
+import com.limboooo.contactrecorder.repository.room.entity.normal.Names
+import com.limboooo.contactrecorder.repository.room.entity.normal.Things
 import com.limboooo.contactrecorder.repository.room.entity.whole.*
+import com.nlf.calendar.Solar
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
 
-val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "data")
 const val disableLog = false
 
 fun String.showLog(tag: String = "myapp") {
@@ -43,114 +41,190 @@ const val normalDataOwnerId = 1000000
  */
 class ProjectViewModel : ViewModel() {
 
-    var targetData: RelativesInfoWhole = resetTargetData()
+    //用于保存新的用户或者更新
+    lateinit var targetData: RelativesInfoWhole
+
+    //用于RecyclerView保存
+    var inputPhone = mutableListOf(Phones(0, 0, ""))
+    var inputEmail = mutableListOf(Emails(0, 0, ""))
+    var inputThingReceived = mutableListOf(MoneyReceived(0, 0, "", "", ""))
+    var inputThingGave = mutableListOf(MoneyGave(0, 0, "", "", ""))
+    var inputName = ""
+
+    var today: Solar = Solar.fromDate(Date())
+
+    //用于RecyclerView判断是否有输入
+    var isHaveContent = false
+
+    //判断是否是删除模式，控制UI显示
+    var deleteMode: Boolean = false
+
+    //数据库的操作列表
+    private val dao by lazy { ProjectDatabase.getDatabase().projectDao() }
+
+    //主页面的list
+    private val _mainListData: MutableStateFlow<List<RelativesBaseInfo>> =
+        MutableStateFlow(listOf())
+    val mainListData = _mainListData.asStateFlow()
+
+    //用于辅助删除撤销操作
+    val mainListDataBackup by lazy { mutableListOf<RelativesBaseInfo>() }
+
+    //被删除的名单
+    val deletedList: MutableList<RelativesBaseInfo> by lazy { mutableListOf() }
+
+    //用于下拉栏
+//    private val _names = MutableStateFlow(listOf<Names>())
+//    private val _moneys = MutableStateFlow(listOf<Moneys>())
+//    private val _things = MutableStateFlow(listOf<Things>())
+//    private val _emails = MutableStateFlow(listOf<Emails>())
+//    private val _phones = MutableStateFlow(listOf<Phones>())
+
+    //    val names = _names.asStateFlow()
+//    val moneys = _moneys.asStateFlow()
+//    val things = _things.asStateFlow()
+//    val emails = _emails.asStateFlow()
+//    val phones = _phones.asStateFlow()
+    lateinit var names: MutableList<String>
+    lateinit var moneys: MutableList<String>
+    lateinit var things: MutableList<String>
+    lateinit var emails: MutableList<String>
+    lateinit var phones: MutableList<String>
+
+
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            launchDownList()
+            launch {
+                dao.getAllBaseInfo().collect {
+                    _mainListData.value = it
+                }
+            }
+        }
+    }
+
+    private fun CoroutineScope.launchDownList() {
+        launch {
+            dao.getNames().collect { list ->
+                names = MutableList(list.size) {
+                    list[it].name
+                }
+            }
+        }
+        launch {
+            dao.getEmails().collect { list ->
+                emails = MutableList(list.size) {
+                    list[it].email
+                }
+            }
+        }
+        launch {
+            dao.getPhones().collect { list ->
+                phones = MutableList(list.size) {
+                    list[it].phone
+                }
+            }
+        }
+        launch {
+            dao.getThings().collect { list ->
+                things = MutableList(list.size) {
+                    list[it].thing
+                }
+            }
+        }
+        launch {
+            dao.getMoneys().collect { list ->
+                moneys = MutableList(list.size) {
+                    list[it].money
+                }
+            }
+        }
+    }
 
     private fun resetTargetData(): RelativesInfoWhole {
         return RelativesInfoWhole(
             RelativesBaseInfo(0, "", 0, 0),
             mutableListOf(Phones(0, 0, "")),
             mutableListOf(Emails(0, 0, "")),
-            mutableListOf(Exchanges(0, 0, today, "", "")),
-            mutableListOf(Exchanges(0, 0, today, "", ""))
+            mutableListOf(MoneyReceived(0, 0, "$today   ${today.lunar}", "", "")),
+            mutableListOf(MoneyGave(0, 0, "$today   ${today.lunar}", "", ""))
         )
     }
 
-    var today: String = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-    var isHaveContent = false
-    var deleteMode: Boolean = false
-
-    //数据库的操作列表
-    private val dao by lazy { ProjectDatabase.getDatabase().projectDao() }
-
-    //全部数据
-    private val _dataList: MutableStateFlow<List<RelativesInfoWhole>> =
-        MutableStateFlow(listOf())
-    val dataList = _dataList.asStateFlow()
-
-    //下拉栏数据
-    private val _normalData = MutableStateFlow(
-        NormalDataSet(
-            NormalKey(1, ""),
-            listOf(), listOf(), listOf(), listOf(), listOf()
-        )
-    )
-    val normalData = _normalData.asStateFlow()
-
-    //主页面的list
-    private val _mainListData: MutableStateFlow<List<RelativesBaseInfo>> =
-        MutableStateFlow(listOf())
-    val mainListData = _mainListData.asStateFlow()
-    val mainListDataBackup by lazy { mutableListOf<RelativesBaseInfo>() }
-
-    //被删除的名单
-    val deletedList: MutableList<RelativesBaseInfo> by lazy { mutableListOf() }
-    private val _names = MutableStateFlow(listOf<String>())
-    private val _moneys = MutableStateFlow(listOf<String>())
-    private val _things = MutableStateFlow(listOf<String>())
-    private val _emails = MutableStateFlow(listOf<String>())
-    private val _phones = MutableStateFlow(listOf<String>())
-    val names = _names.asStateFlow()
-    val moneys = _moneys.asStateFlow()
-    val things = _things.asStateFlow()
-    val emails = _emails.asStateFlow()
-    val phones = _phones.asStateFlow()
-
-
-    init {
-        viewModelScope.launch(Dispatchers.IO) {
-            launch {
-
-            }
-            launch {
-                dao.getMainList().collect {
-                    _mainListData.value = it
-                    mainListDataBackup.run {
-                        clear()
-                        addAll(it)
-                    }
-                }
-            }
-            launch {
-
-            }
-            launch {
-                dao.getNormalNames().collect {
-                    _names.value = it
-                }
-            }
-            launch {
-                dao.getNormalEmails().collect {
-                    _emails.value = it
-                }
-            }
-            launch {
-                dao.getNormalMoneys().collect {
-                    _moneys.value = it
-                }
-            }
-            launch {
-                dao.getNormalPhones().collect {
-                    _phones.value = it
-                }
-            }
-            launch {
-                dao.getNormalThings().collect {
-                    _things.value = it
-                }
-            }
-        }
-    }
-
-    fun save() {
+    fun saveAll() {
         if (deletedList.isEmpty()) {
             return
         }
         viewModelScope.launch(Dispatchers.IO) {
-            deletedList.forEach { base ->
-
+            //todo 从全部列表中删除
+            deletedList.forEach {
+                dao.deleteOneUser(it)
             }
         }
     }
 
+    fun saveTarget() {
+        //todo 调用dao的update和add
+        dao.insertOneUser(targetData)
+    }
 
+    suspend fun getOneUser(name: String): RelativesInfoWhole {
+        return withContext(Dispatchers.IO) {
+            dao.getOneUser(name)
+        }
+    }
+
+    fun invalidateMainList() {
+        viewModelScope.launch {
+            _mainListData.value = dao.getAllBaseInfo().first()
+        }
+    }
+
+    fun saveDownList(name: String) {
+        inputPhone.forEachIndexed { index, phone ->
+            if (index != inputPhone.size - 1 && !phones.contains(phone.phone))
+                dao.insertPhone(
+                    Phones(
+                        0,
+                        normalDataOwnerId,
+                        phone.phone
+                    )
+                )
+        }
+        inputEmail.forEachIndexed { index, email ->
+            if (index != inputEmail.size - 1 && !emails.contains(email.email))
+                dao.insertEmail(
+                    Emails(
+                        0,
+                        normalDataOwnerId,
+                        email.email
+                    )
+                )
+        }
+        inputThingGave.forEachIndexed { index, thing ->
+            if (index != inputThingGave.size - 1 && !things.contains(thing.thing))
+                dao.insertThing(
+                    Things(
+                        0,
+                        normalDataOwnerId,
+                        thing.thing
+                    )
+                )
+        }
+        inputThingReceived.forEachIndexed { index, thing ->
+            if (index != inputThingReceived.size - 1 && !things.contains(thing.thing))
+                dao.insertThing(
+                    Things(
+                        0,
+                        normalDataOwnerId,
+                        thing.thing
+                    )
+                )
+        }
+        if (!names.contains(name)) dao.insertName(Names(0, normalDataOwnerId, name))
+    }
+
+    fun loadTargetDetail(position: Int) {
+        targetData = dao.getOneUser(mainListData.value[position].id)
+    }
 }

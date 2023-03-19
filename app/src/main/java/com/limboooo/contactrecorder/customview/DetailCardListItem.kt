@@ -11,7 +11,7 @@ class DetailCardListItem @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
 ) : ConstraintLayout(context, attrs) {
 
-    private val binding: ItemContactDetailCardBinding
+     private val binding: ItemContactDetailCardBinding
 
     init {
         val view =
@@ -20,7 +20,7 @@ class DetailCardListItem @JvmOverloads constructor(
     }
 
     fun setData(thing: String, money: Int, checked: Boolean) {
-        binding.what.text = thing
+        binding.thing.text = thing
         binding.money.text = money.toString()
         binding.state.isChecked = checked
     }

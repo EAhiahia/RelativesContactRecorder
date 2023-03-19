@@ -11,6 +11,7 @@ import com.limboooo.contactrecorder.R
 import com.limboooo.contactrecorder.databinding.ActivityMainBinding
 import com.limboooo.contactrecorder.fragment.FragmentContactList
 import com.limboooo.contactrecorder.repository.ProjectViewModel
+import kotlinx.coroutines.runBlocking
 
 class MainActivity : AppCompatActivity() {
 
@@ -21,9 +22,9 @@ class MainActivity : AppCompatActivity() {
     private val viewModel by viewModels<ProjectViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-//        runBlocking {
-//            viewModel.dataList.first()
-//        }
+        runBlocking {
+            viewModel.invalidateMainList()
+        }
         WindowCompat.setDecorFitsSystemWindows(window, false)
         proxyFragmentFactory()
         super.onCreate(savedInstanceState)

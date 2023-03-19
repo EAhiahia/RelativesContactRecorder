@@ -26,7 +26,7 @@ class ContactListAdapter(private val viewModel: ProjectViewModel) :
                 oldItem: RelativesBaseInfo,
                 newItem: RelativesBaseInfo
             ): Boolean {
-                return oldItem.uid == newItem.uid
+                return oldItem.id == newItem.id
             }
 
             override fun areContentsTheSame(
@@ -53,9 +53,6 @@ class ContactListAdapter(private val viewModel: ProjectViewModel) :
                 name.text = entity.name
                 received.text = entity.moneyReceivedWhole.toString()
                 gave.text = entity.moneyGaveWhole.toString()
-                item.setOnClickListener {
-                    it.navigator.push(FragmentContactDetail::class)
-                }
                 deleteButton.setOnClickListener {
                     viewModel.mainListDataBackup.remove(entity)
                     viewModel.deletedList.add(entity)

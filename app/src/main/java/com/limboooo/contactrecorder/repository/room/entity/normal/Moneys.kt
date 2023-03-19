@@ -7,5 +7,5 @@ import androidx.room.PrimaryKey
 data class Moneys(
     @PrimaryKey(true) val id: Int,
     val ownerId: Int,
-    val money: Int
+    val money: String
 )

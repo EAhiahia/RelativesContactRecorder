@@ -6,6 +6,6 @@ import androidx.room.PrimaryKey
 @Entity
 data class Phones(
     @PrimaryKey(true) val id: Int,
-    val ownerId: Int,
+    var ownerId: Int,
     val phone: String
 )

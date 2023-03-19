@@ -4,8 +4,10 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-data class Emails(
+data class MoneyGave(
     @PrimaryKey(true) val id: Int,
     var ownerId: Int,
-    val email: String
+    val time: String,
+    val thing: String,
+    val money: String
 )

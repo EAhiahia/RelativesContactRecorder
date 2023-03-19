@@ -23,9 +23,9 @@ class ContactListItemView @JvmOverloads constructor(
      * 需要考虑用户记录的时候
      */
     fun setDate(name: String, received: Int, gave: Int) {
-        binding.relativesName.text = name
-        binding.receivedMoney.text = if (received != 0) "收到了${received}元" else ""
-        binding.gaveMoney.text = if (gave != 0) "给了${gave}元" else ""
+        binding.name.text = name
+        binding.received.text = if (received != 0) "收到了${received}元" else ""
+        binding.gave.text = if (gave != 0) "给了${gave}元" else ""
     }
 
 }
