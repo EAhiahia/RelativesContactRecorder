@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
 
 class DialogAddExchanges : DialogFragment() {
 
-    private var isNew = false
+    private var isNew = true
     private lateinit var binding: DialogAddContactBinding
     private val viewModel: ProjectViewModel by activityViewModels()
 
@@ -54,8 +54,10 @@ class DialogAddExchanges : DialogFragment() {
                             save()
                             //todo 保存常见项
                             viewModel.saveDownList(binding.name.text.toString())
-                            "保存完成".showShortToast()
-                            up()
+                            launch(Dispatchers.Main) {
+                                "保存完成".showShortToast()
+                                up()
+                            }
                         }
                         true
 //                        }
@@ -73,7 +75,7 @@ class DialogAddExchanges : DialogFragment() {
                             up()
                         }
                         .show()
-                }else{
+                } else {
                     navigator.pop()
                 }
             }
@@ -130,14 +132,16 @@ class DialogAddExchanges : DialogFragment() {
                 viewModel.inputPhone,
                 viewModel.inputEmail,
                 viewModel.inputThingReceived,
-                viewModel.inputThingGave
+                mutableListOf(),
+                viewModel.inputThingGave,
+                mutableListOf()
             )
         } else {
             new = viewModel.targetData.copy(
                 phones = viewModel.inputPhone,
                 emails = viewModel.inputEmail,
                 moneyGave = viewModel.inputThingGave,
-                moneyReceived = viewModel.inputThingReceived
+                moneyReceived = viewModel.inputThingReceived,
             )
         }
         viewModel.targetData = new

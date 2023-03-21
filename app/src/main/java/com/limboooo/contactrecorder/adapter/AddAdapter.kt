@@ -15,8 +15,11 @@ import com.limboooo.contactrecorder.databinding.AddEmailViewBinding
 import com.limboooo.contactrecorder.databinding.AddPhoneViewBinding
 import com.limboooo.contactrecorder.databinding.AddThingViewBinding
 import com.limboooo.contactrecorder.repository.ProjectViewModel
+import com.limboooo.contactrecorder.repository.room.entity.whole.Emails
 import com.limboooo.contactrecorder.repository.room.entity.whole.MoneyGave
 import com.limboooo.contactrecorder.repository.room.entity.whole.MoneyReceived
+import com.limboooo.contactrecorder.repository.room.entity.whole.Phones
+import com.nlf.calendar.Solar
 import java.util.*
 
 
@@ -112,18 +115,38 @@ class AddAdapter(
                 }
                 INPUT_EMAIL -> {
                     val binding = AddEmailViewBinding.bind(view)
-                    val targetData = viewModel.inputEmail[position]
-                    binding.email.text!!.run {
-                        clear()
-                        append(targetData.email)
+                    if (position != viewModel.inputEmail.size - 1) {
+                        val targetData = viewModel.inputEmail[position]
+                        binding.email.text!!.run {
+                            clear()
+                            append(targetData.email)
+                        }
+                    } else {
+                        binding.email.setOnFocusChangeListener { _, hasFocus ->
+                            if (!hasFocus) {
+                                if (binding.email.text.isNotEmpty()) {
+                                    addData(position, "email")
+                                }
+                            }
+                        }
                     }
                 }
                 INPUT_PHONE -> {
                     val binding = AddPhoneViewBinding.bind(view)
-                    val targetData = viewModel.inputPhone[position]
-                    binding.phone.text!!.run {
-                        clear()
-                        append(targetData.phone)
+                    if (position != viewModel.inputEmail.size - 1) {
+                        val targetData = viewModel.inputPhone[position]
+                        binding.phone.text!!.run {
+                            clear()
+                            append(targetData.phone)
+                        }
+                    } else {
+                        binding.phone.setOnFocusChangeListener { _, hasFocus ->
+                            if (!hasFocus) {
+                                if (binding.phone.text.isNotEmpty()) {
+                                    addData(position, "phone")
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -153,6 +176,30 @@ class AddAdapter(
                                 0,
                                 "${viewModel.today}   ${viewModel.today.lunar}",
                                 "",
+                                ""
+                            )
+                        )
+                        notifyItemInserted(position + 1)
+                    }
+                }
+                "phone" -> {
+                    if (viewModel.inputPhone.size < position + 2) {
+                        viewModel.inputPhone.add(
+                            Phones(
+                                0,
+                                0,
+                                ""
+                            )
+                        )
+                        notifyItemInserted(position + 1)
+                    }
+                }
+                "email" -> {
+                    if (viewModel.inputEmail.size < position + 2) {
+                        viewModel.inputEmail.add(
+                            Emails(
+                                0,
+                                0,
                                 ""
                             )
                         )
@@ -231,11 +278,16 @@ class AddAdapter(
         val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.CHINA)
         val date: Date = inputFormat.parse(dateString)
         val timeInMillis: Long = date.time
+        //todo 有bug，默认选择的是上一天
         MaterialDatePicker.Builder.datePicker().setSelection(
             timeInMillis
         ).setInputMode(MaterialDatePicker.INPUT_MODE_CALENDAR).build().apply {
             addOnPositiveButtonClickListener {
-                time.text!!.append("${viewModel.today}   ${viewModel.today.lunar}")
+                val today = Solar.fromDate(Date(it))
+                time.text!!.run {
+                    clear()
+                    append("$today   ${today.lunar}")
+                }
             }
         }.show(fragmentManager!!, "dataPicker")
     }

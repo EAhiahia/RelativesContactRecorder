@@ -11,7 +11,7 @@ import com.limboooo.contactrecorder.repository.room.entity.normal.Things
 import com.limboooo.contactrecorder.repository.room.entity.whole.*
 
 @Database(
-    entities = [Moneys::class, Names::class, NormalKey::class, Things::class, Emails::class, MoneyGave::class, MoneyReceived::class, Phones::class, RelativesBaseInfo::class],
+    entities = [Moneys::class, Names::class, NormalKey::class, Things::class, Emails::class, MoneyGave::class, MoneyReceived::class, Phones::class, RelativesBaseInfo::class,MoneyReceivedBack::class,MoneyGaveBack::class],
     version = 1
 )
 abstract class ProjectDatabase : RoomDatabase() {

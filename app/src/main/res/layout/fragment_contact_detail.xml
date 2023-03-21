@@ -34,16 +34,16 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <include
+            <com.limboooo.contactrecorder.customview.DetailCardView
                 android:id="@+id/card_received"
-                layout="@layout/card_contact_detail"
+                app:title="收到的钱"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp" />
 
-            <include
+            <com.limboooo.contactrecorder.customview.DetailCardView
                 android:id="@+id/card_gave"
-                layout="@layout/card_contact_detail"
+                app:title="给出的钱"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp" />

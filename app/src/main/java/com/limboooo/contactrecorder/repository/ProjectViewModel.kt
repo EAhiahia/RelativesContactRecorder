@@ -47,8 +47,8 @@ class ProjectViewModel : ViewModel() {
     //用于RecyclerView保存
     var inputPhone = mutableListOf(Phones(0, 0, ""))
     var inputEmail = mutableListOf(Emails(0, 0, ""))
-    var inputThingReceived = mutableListOf(MoneyReceived(0, 0, "", "", ""))
-    var inputThingGave = mutableListOf(MoneyGave(0, 0, "", "", ""))
+    var inputThingReceived = mutableListOf(MoneyReceived(0, 0, "",  "", ""))
+    var inputThingGave = mutableListOf(MoneyGave(0, 0, "",  "", ""))
     var inputName = ""
 
     var today: Solar = Solar.fromDate(Date())
@@ -74,17 +74,6 @@ class ProjectViewModel : ViewModel() {
     val deletedList: MutableList<RelativesBaseInfo> by lazy { mutableListOf() }
 
     //用于下拉栏
-//    private val _names = MutableStateFlow(listOf<Names>())
-//    private val _moneys = MutableStateFlow(listOf<Moneys>())
-//    private val _things = MutableStateFlow(listOf<Things>())
-//    private val _emails = MutableStateFlow(listOf<Emails>())
-//    private val _phones = MutableStateFlow(listOf<Phones>())
-
-    //    val names = _names.asStateFlow()
-//    val moneys = _moneys.asStateFlow()
-//    val things = _things.asStateFlow()
-//    val emails = _emails.asStateFlow()
-//    val phones = _phones.asStateFlow()
     lateinit var names: MutableList<String>
     lateinit var moneys: MutableList<String>
     lateinit var things: MutableList<String>
@@ -147,7 +136,9 @@ class ProjectViewModel : ViewModel() {
             mutableListOf(Phones(0, 0, "")),
             mutableListOf(Emails(0, 0, "")),
             mutableListOf(MoneyReceived(0, 0, "$today   ${today.lunar}", "", "")),
-            mutableListOf(MoneyGave(0, 0, "$today   ${today.lunar}", "", ""))
+            mutableListOf(MoneyReceivedBack(0, 0, "$today   ${today.lunar}", "", "")),
+            mutableListOf(MoneyGave(0, 0, "$today   ${today.lunar}", "", "")),
+            mutableListOf(MoneyGaveBack(0, 0, "$today   ${today.lunar}", "", ""))
         )
     }
 
@@ -226,5 +217,9 @@ class ProjectViewModel : ViewModel() {
 
     fun loadTargetDetail(position: Int) {
         targetData = dao.getOneUser(mainListData.value[position].id)
+    }
+
+    fun deleteTargetUser() {
+        dao.deleteOneUser(targetData.baseInfo)
     }
 }

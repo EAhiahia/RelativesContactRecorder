@@ -24,5 +24,15 @@ data class RelativesInfoWhole(
         parentColumn = "id",
         entityColumn = "ownerId"
     )
-    val moneyGave: MutableList<MoneyGave>
+    val moneyReceivedBack: MutableList<MoneyReceivedBack>,
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "ownerId"
+    )
+    val moneyGave: MutableList<MoneyGave>,
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "ownerId"
+    )
+    val moneyGaveBack: MutableList<MoneyGaveBack>
 )
