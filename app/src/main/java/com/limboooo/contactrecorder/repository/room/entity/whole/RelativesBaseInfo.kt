@@ -9,9 +9,9 @@ import androidx.room.PrimaryKey
  */
 @Entity
 data class RelativesBaseInfo(
-    @PrimaryKey(true) val id: Int,
+    @PrimaryKey(true) val id: Long,
     //基本信息
-    val name: String,
+    var name: String,
     var moneyReceivedWhole: Int,
     var moneyGaveWhole: Int
 )

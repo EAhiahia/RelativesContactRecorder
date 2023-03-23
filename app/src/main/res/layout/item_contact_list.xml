@@ -7,7 +7,7 @@
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/item"
         style="?attr/materialCardViewElevatedStyle"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/fab_margin"
         android:layout_marginTop="@dimen/fab_margin"
@@ -59,7 +59,12 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/delete_button"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
+        android:text="删除"
+        android:backgroundTint="?attr/colorError"
+        app:rippleColor="?attr/colorOnError"
+        android:layout_marginEnd="@dimen/fab_margin"
+        android:visibility="gone"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="@id/item"
         app:layout_constraintEnd_toEndOf="parent"

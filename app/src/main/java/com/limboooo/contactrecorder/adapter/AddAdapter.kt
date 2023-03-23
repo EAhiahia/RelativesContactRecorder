@@ -5,6 +5,7 @@ import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
@@ -37,29 +38,32 @@ class AddAdapter(
     inner class AddViewHolder(val view: View) : ViewHolder(view) {
 
         fun bindData(position: Int) {
-            //todo 当用户删除所有数据的时候，需要删除空行剩一个
             when (viewType) {
                 INPUT_THING_GAVE -> {
                     val binding = AddThingViewBinding.bind(view)
-                    if (position != viewModel.inputThingGave.size - 1) {
-                        val targetData = viewModel.inputThingGave[position]
-                        binding.time.text!!.run {
-                            clear()
-                            append(targetData.time)
-                        }
-                        binding.money.text!!.run {
-                            clear()
-                            append(targetData.money)
-                        }
-                        binding.thing.text!!.run {
-                            clear()
-                            append(targetData.thing)
-                        }
-                    } else {
-                        binding.time.text!!.run {
-                            clear()
-                            append("${viewModel.today}   ${viewModel.today.lunar}")
-                        }
+                    val targetData = viewModel.targetData.moneyGave[position]
+                    binding.time.text!!.run {
+                        clear()
+                        append(targetData.time)
+                    }
+                    binding.time.addTextChangedListener {
+                        viewModel.targetData.moneyGave[position].time= it.toString()
+                    }
+                    binding.money.text!!.run {
+                        clear()
+                        append(targetData.money)
+                    }
+                    binding.money.addTextChangedListener {
+                        viewModel.targetData.moneyGave[position].money = it.toString()
+                    }
+                    binding.thing.text!!.run {
+                        clear()
+                        append(targetData.thing)
+                    }
+                    binding.thing.addTextChangedListener {
+                        viewModel.targetData.moneyGave[position].thing = it.toString()
+                    }
+                    if (position == viewModel.targetData.moneyGave.size - 1) {
                         binding.money.setOnFocusChangeListener { _, hasFocus ->
                             if (!hasFocus) {
                                 if (binding.money.text.isNotEmpty()) {
@@ -78,25 +82,29 @@ class AddAdapter(
                 }
                 INPUT_THING_RECEIVED -> {
                     val binding = AddThingViewBinding.bind(view)
-                    if (position != viewModel.inputThingReceived.size - 1) {
-                        val targetData = viewModel.inputThingGave[position]
-                        binding.time.text!!.run {
-                            clear()
-                            append(targetData.time)
-                        }
-                        binding.money.text!!.run {
-                            clear()
-                            append(targetData.money)
-                        }
-                        binding.thing.text!!.run {
-                            clear()
-                            append(targetData.thing)
-                        }
-                    } else {
-                        binding.time.text!!.run {
-                            clear()
-                            append("${viewModel.today}   ${viewModel.today.lunar}")
-                        }
+                    val targetData = viewModel.targetData.moneyReceived[position]
+                    binding.time.text!!.run {
+                        clear()
+                        append(targetData.time)
+                    }
+                    binding.time.addTextChangedListener {
+                        viewModel.targetData.moneyReceived[position].time = it.toString()
+                    }
+                    binding.money.text!!.run {
+                        clear()
+                        append(targetData.money)
+                    }
+                    binding.money.addTextChangedListener {
+                        viewModel.targetData.moneyReceived[position].money = it.toString()
+                    }
+                    binding.thing.text!!.run {
+                        clear()
+                        append(targetData.thing)
+                    }
+                    binding.thing.addTextChangedListener {
+                        viewModel.targetData.moneyReceived[position].thing = it.toString()
+                    }
+                    if (position == viewModel.targetData.moneyReceived.size - 1) {
                         binding.money.setOnFocusChangeListener { _, hasFocus ->
                             if (!hasFocus) {
                                 if (binding.money.text.isNotEmpty()) {
@@ -115,13 +123,15 @@ class AddAdapter(
                 }
                 INPUT_EMAIL -> {
                     val binding = AddEmailViewBinding.bind(view)
-                    if (position != viewModel.inputEmail.size - 1) {
-                        val targetData = viewModel.inputEmail[position]
-                        binding.email.text!!.run {
-                            clear()
-                            append(targetData.email)
-                        }
-                    } else {
+                    val targetData = viewModel.targetData.emails[position]
+                    binding.email.text!!.run {
+                        clear()
+                        append(targetData.email)
+                    }
+                    binding.email.addTextChangedListener {
+                        viewModel.targetData.emails[position].email = it.toString()
+                    }
+                    if (position == viewModel.targetData.emails.size - 1) {
                         binding.email.setOnFocusChangeListener { _, hasFocus ->
                             if (!hasFocus) {
                                 if (binding.email.text.isNotEmpty()) {
@@ -133,13 +143,15 @@ class AddAdapter(
                 }
                 INPUT_PHONE -> {
                     val binding = AddPhoneViewBinding.bind(view)
-                    if (position != viewModel.inputEmail.size - 1) {
-                        val targetData = viewModel.inputPhone[position]
-                        binding.phone.text!!.run {
-                            clear()
-                            append(targetData.phone)
-                        }
-                    } else {
+                    val targetData = viewModel.targetData.phones[position]
+                    binding.phone.text!!.run {
+                        clear()
+                        append(targetData.phone)
+                    }
+                    binding.phone.addTextChangedListener {
+                        viewModel.targetData.phones[position].phone = it.toString()
+                    }
+                    if (position == viewModel.targetData.phones.size - 1) {
                         binding.phone.setOnFocusChangeListener { _, hasFocus ->
                             if (!hasFocus) {
                                 if (binding.phone.text.isNotEmpty()) {
@@ -155,52 +167,40 @@ class AddAdapter(
         private fun addData(position: Int, where: String) {
             when (where) {
                 "gave" -> {
-                    if (viewModel.inputThingGave.size < position + 2) {
-                        viewModel.inputThingGave.add(
+                    if (viewModel.targetData.moneyGave.size < position + 2) {
+                        viewModel.targetData.moneyGave.add(
                             MoneyGave(
-                                0,
-                                0,
-                                "${viewModel.today}   ${viewModel.today.lunar}",
-                                "",
-                                ""
+                                0, 0, "${viewModel.today}   ${viewModel.today.lunar}", "", ""
                             )
                         )
                         notifyItemInserted(position + 1)
                     }
                 }
                 "received" -> {
-                    if (viewModel.inputThingReceived.size < position + 2) {
-                        viewModel.inputThingReceived.add(
+                    if (viewModel.targetData.moneyReceived.size < position + 2) {
+                        viewModel.targetData.moneyReceived.add(
                             MoneyReceived(
-                                0,
-                                0,
-                                "${viewModel.today}   ${viewModel.today.lunar}",
-                                "",
-                                ""
+                                0, 0, "${viewModel.today}   ${viewModel.today.lunar}", "", ""
                             )
                         )
                         notifyItemInserted(position + 1)
                     }
                 }
                 "phone" -> {
-                    if (viewModel.inputPhone.size < position + 2) {
-                        viewModel.inputPhone.add(
+                    if (viewModel.targetData.phones.size < position + 2) {
+                        viewModel.targetData.phones.add(
                             Phones(
-                                0,
-                                0,
-                                ""
+                                0, 0, ""
                             )
                         )
                         notifyItemInserted(position + 1)
                     }
                 }
                 "email" -> {
-                    if (viewModel.inputEmail.size < position + 2) {
-                        viewModel.inputEmail.add(
+                    if (viewModel.targetData.emails.size < position + 2) {
+                        viewModel.targetData.emails.add(
                             Emails(
-                                0,
-                                0,
-                                ""
+                                0, 0, ""
                             )
                         )
                         notifyItemInserted(position + 1)
@@ -211,7 +211,7 @@ class AddAdapter(
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AddViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AddAdapter.AddViewHolder {
         val layoutId: Int = when (viewType) {
             INPUT_THING_GAVE -> R.layout.add_thing_view
             INPUT_THING_RECEIVED -> R.layout.add_thing_view
@@ -240,10 +240,10 @@ class AddAdapter(
     }
 
     override fun getItemCount(): Int = when (viewType) {
-        INPUT_THING_GAVE -> viewModel.inputThingGave.size
-        INPUT_THING_RECEIVED -> viewModel.inputThingReceived.size
-        INPUT_EMAIL -> viewModel.inputEmail.size
-        INPUT_PHONE -> viewModel.inputPhone.size
+        INPUT_THING_GAVE -> viewModel.targetData.moneyGave.size
+        INPUT_THING_RECEIVED -> viewModel.targetData.moneyReceived.size
+        INPUT_EMAIL -> viewModel.targetData.emails.size
+        INPUT_PHONE -> viewModel.targetData.phones.size
         else -> throw Exception("不可能走到这里")
     }
 

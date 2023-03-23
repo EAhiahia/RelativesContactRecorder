@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
@@ -18,8 +19,6 @@ import com.limboooo.contactrecorder.R
 import com.limboooo.contactrecorder.adapter.*
 import com.limboooo.contactrecorder.databinding.DialogAddContactBinding
 import com.limboooo.contactrecorder.repository.ProjectViewModel
-import com.limboooo.contactrecorder.repository.room.entity.whole.RelativesBaseInfo
-import com.limboooo.contactrecorder.repository.room.entity.whole.RelativesInfoWhole
 import com.limboooo.contactrecorder.tools.showShortToast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -41,18 +40,22 @@ class DialogAddExchanges : DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        requireActivity().onBackPressedDispatcher.run {
+            addCallback(viewLifecycleOwner) {
+                viewModel.targetDataBackup?.let {
+                    viewModel.targetData = it
+                }
+                isEnabled = false
+                onBackPressed()
+            }
+        }
         initAdapter()
         binding.topAppBar.apply {
             setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.save -> {
-                        //TODO:展示进度条，进行保存工作
-                        //TODO("检查数据，进行数据的本地化存储和UI更改")
-                        //todo 不确定是否是点击保存就会自动返回
-                        //检查某些数据是否出现过，没有出现过就添加到本地化存储当中
                         lifecycleScope.launch(Dispatchers.IO) {
                             save()
-                            //todo 保存常见项
                             viewModel.saveDownList(binding.name.text.toString())
                             launch(Dispatchers.Main) {
                                 "保存完成".showShortToast()
@@ -60,14 +63,12 @@ class DialogAddExchanges : DialogFragment() {
                             }
                         }
                         true
-//                        }
                     }
                     else -> false
                 }
             }
             setNavigationOnClickListener {
-                //todo 添加是否有添加内容的判断
-                if (viewModel.isHaveContent) {
+                if (binding.name.text.isNotBlank()) {
                     MaterialAlertDialogBuilder(requireContext())
                         .setMessage("是否要舍弃已添加的内容？")
                         .setNegativeButton("否，继续添加", null)
@@ -76,12 +77,13 @@ class DialogAddExchanges : DialogFragment() {
                         }
                         .show()
                 } else {
-                    navigator.pop()
+                    up()
                 }
             }
         }
-
         binding.name.run {
+            text.append(viewModel.targetData.baseInfo.name)
+            if (viewModel.targetData.baseInfo.name.isNotBlank()) binding.topAppBar.menu.findItem(R.id.save).isEnabled = true
             //当为空的时候禁用保存按钮
             addTextChangedListener {
                 binding.topAppBar.menu.findItem(R.id.save).isEnabled = it!!.isNotBlank()
@@ -96,6 +98,7 @@ class DialogAddExchanges : DialogFragment() {
                         isNew = false
                     }
                     .setNegativeButton("建立为新的联系人") { _, _ ->
+                        //todo 查找同名字的数目，然后递增
                         text.append("_${kotlin.random.Random.nextInt(100000)}")
                         isNew = true
                     }
@@ -124,51 +127,65 @@ class DialogAddExchanges : DialogFragment() {
     }
 
     private fun save() {
-        val new: RelativesInfoWhole
-        if (isNew) {
-            //todo 计算收入给出的差额
-            new = RelativesInfoWhole(
-                RelativesBaseInfo(0, binding.name.text!!.toString(), 0, 0),
-                viewModel.inputPhone,
-                viewModel.inputEmail,
-                viewModel.inputThingReceived,
-                mutableListOf(),
-                viewModel.inputThingGave,
-                mutableListOf()
-            )
-        } else {
-            new = viewModel.targetData.copy(
-                phones = viewModel.inputPhone,
-                emails = viewModel.inputEmail,
-                moneyGave = viewModel.inputThingGave,
-                moneyReceived = viewModel.inputThingReceived,
-            )
-        }
-        viewModel.targetData = new
+        checkData()
         viewModel.saveTarget()
+    }
+
+    private fun checkData() {
+        var moneyReceivedWhole = 0
+        var moneyGaveWhole = 0
+        viewModel.targetData.moneyReceived.iterator().let {
+            while (it.hasNext()) {
+                val next = it.next()
+                if (next.money.isNotBlank() && next.thing.isNotBlank()) moneyReceivedWhole += next.money.toInt()
+                else it.remove()
+            }
+        }
+        viewModel.targetData.moneyGave.iterator().let {
+            while (it.hasNext()) {
+                val next = it.next()
+                if (next.money.isNotBlank() && next.thing.isNotBlank()) moneyGaveWhole += next.money.toInt()
+                else it.remove()
+            }
+        }
+        viewModel.targetData.baseInfo.apply {
+            name = binding.name.text.toString()
+            this.moneyReceivedWhole = moneyReceivedWhole
+            this.moneyGaveWhole = moneyGaveWhole
+        }
+
+        viewModel.targetData.moneyReceivedBack.iterator().let {
+            while (it.hasNext()) {
+                val next = it.next()
+                if (next.money.isNotBlank() && next.thing.isNotBlank()) moneyReceivedWhole += next.money.toInt()
+                else it.remove()
+            }
+        }
+        viewModel.targetData.moneyGaveBack.iterator().let {
+            while (it.hasNext()) {
+                val next = it.next()
+                if (next.money.isNotBlank() && next.thing.isNotBlank()) moneyGaveWhole += next.money.toInt()
+                else it.remove()
+            }
+        }
+        viewModel.targetData.emails.iterator().let {
+            while (it.hasNext()) {
+                val next = it.next()
+                if (next.email.isBlank()) it.remove()
+            }
+        }
+        viewModel.targetData.phones.iterator().let {
+            while (it.hasNext()) {
+                val next = it.next()
+                if (next.phone.isBlank()) it.remove()
+            }
+        }
     }
 
     @SuppressLint("NotifyDataSetChanged")
     private fun loadTargetContactInfo(name: String) {
         lifecycleScope.launch {
             viewModel.targetData = viewModel.getOneUser(name).apply {
-                //todo 载入已有数据，需要找到id，避免重复保存，（应该不需要id，毕竟是update）
-                viewModel.inputEmail.run {
-                    clear()
-                    addAll(emails)
-                }
-                viewModel.inputPhone.run {
-                    clear()
-                    addAll(phones)
-                }
-                viewModel.inputThingGave.run {
-                    clear()
-                    addAll(moneyGave)
-                }
-                viewModel.inputThingReceived.run {
-                    clear()
-                    addAll(moneyReceived)
-                }
                 binding.phoneList.adapter!!.notifyDataSetChanged()
                 binding.emailList.adapter!!.notifyDataSetChanged()
                 binding.gaveList.adapter!!.notifyDataSetChanged()

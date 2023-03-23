@@ -44,37 +44,34 @@ class ContactListAdapter(private val viewModel: ProjectViewModel) :
         fun bind(position: Int) {
             val entity = getItem(position)
             binding.item.setOnClickListener {
-                it.navigator.push(FragmentContactDetail::class){
+                it.navigator.push(FragmentContactDetail::class) {
                     initAnimator()
                     arguments = bundleOf("position" to position)
                 }
             }
+            binding.item.setOnLongClickListener {
+                viewModel.deleteMode.value = !viewModel.deleteMode.value!!
+                true
+            }
             binding.apply {
                 name.text = entity.name
-                received.text = entity.moneyReceivedWhole.toString()
-                gave.text = entity.moneyGaveWhole.toString()
+                received.text = "收到${entity.moneyReceivedWhole}元"
+                gave.text = "给出${entity.moneyGaveWhole}元"
                 deleteButton.setOnClickListener {
-                    viewModel.mainListDataBackup.remove(entity)
-                    viewModel.deletedList.add(entity)
-                    submitList(viewModel.mainListDataBackup.toList())
+                    //用于撤销所有修改
+                    if (viewModel.mainListDataBackup.isEmpty()) viewModel.mainListDataBackup =
+                        viewModel.mainListData.value
+                    viewModel.mainListData.value =
+                        viewModel.mainListData.value.toMutableList().apply { remove(entity) }
+                    viewModel.deletedList.value =
+                        viewModel.deletedList.value!!.toMutableList().apply { add(entity) }
                     Snackbar.make(itemView.parent as View, "已删除", Snackbar.LENGTH_SHORT)
                         .setAction("撤销") {
-                            viewModel.deletedList.remove(entity)
-                            if (position == 0)
-                                viewModel.mainListDataBackup.add(0, entity)
-                            else {
-                                for (index in position - 1 downTo 0) {
-                                    if (viewModel.mainListDataBackup.contains(viewModel.mainListData.value[index])) {
-                                        if (index + 1 != viewModel.mainListDataBackup.size)
-                                            viewModel.mainListDataBackup.add(index + 1, entity)
-                                        else {
-                                            viewModel.mainListDataBackup.add(entity)
-                                        }
-                                        break
-                                    }
-                                }
-                            }
-                            submitList(viewModel.mainListDataBackup.toList())
+                            viewModel.deletedList.value =
+                                viewModel.deletedList.value!!.toMutableList().apply { remove(entity) }
+                            viewModel.mainListData.value =
+                                viewModel.mainListData.value.toMutableList()
+                                    .apply { add(0, entity) }
                         }
                         .show()
                 }
@@ -83,7 +80,8 @@ class ContactListAdapter(private val viewModel: ProjectViewModel) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_contact_list, parent, false)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.item_contact_list, parent, false)
         val binding = ItemContactListBinding.bind(view)
         return ListViewHolder(binding)
     }
@@ -93,7 +91,7 @@ class ContactListAdapter(private val viewModel: ProjectViewModel) :
     }
 
     override fun onViewAttachedToWindow(holder: ListViewHolder) {
-        if (viewModel.deleteMode) {
+        if (viewModel.deleteMode.value!!) {
             holder.binding.deleteButton.visibility = View.VISIBLE
         } else {
             holder.binding.deleteButton.visibility = View.GONE

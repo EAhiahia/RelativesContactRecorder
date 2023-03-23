@@ -27,6 +27,7 @@
     <com.google.android.material.checkbox.MaterialCheckBox
         android:id="@+id/state"
         android:layout_width="wrap_content"
+        android:checked="false"
         android:layout_height="wrap_content"
         app:buttonIcon="@drawable/ic_check"
         app:layout_constraintBottom_toBottomOf="@id/thing"

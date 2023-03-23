@@ -5,9 +5,9 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class MoneyReceived(
-    @PrimaryKey(true) val id: Int,
-    var ownerId: Int,
-    val time: String,
-    val thing: String,
-    val money: String
+    @PrimaryKey(true) val id: Long,
+    var ownerId: Long,
+    var time: String,
+    var thing: String,
+    var money: String
 )

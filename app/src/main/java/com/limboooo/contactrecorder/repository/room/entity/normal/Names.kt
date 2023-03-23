@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class Names(
-    @PrimaryKey(true) val id: Int,
-    val ownerId: Int,
-    val name: String
+    @PrimaryKey(true) val id: Long,
+    var ownerId: Long,
+    var name: String
 )

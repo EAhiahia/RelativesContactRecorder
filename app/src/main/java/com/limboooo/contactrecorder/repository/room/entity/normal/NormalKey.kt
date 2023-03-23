@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class NormalKey(
-    @PrimaryKey(true) val id: Int,
+    @PrimaryKey(true) val id: Long,
     //基本信息
-    val normalKey: String,
+    var normalKey: String,
 )

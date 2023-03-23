@@ -24,8 +24,8 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true"
         android:layout_marginTop="?attr/actionBarSize"
+        android:fillViewport="true"
         android:padding="16dp">
 
         <androidx.appcompat.widget.LinearLayoutCompat
@@ -36,17 +36,119 @@
 
             <com.limboooo.contactrecorder.customview.DetailCardView
                 android:id="@+id/card_received"
-                app:title="收到的钱"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp" />
+                android:layout_marginTop="16dp"
+                app:title="收到的钱" />
 
             <com.limboooo.contactrecorder.customview.DetailCardView
                 android:id="@+id/card_gave"
-                app:title="给出的钱"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp" />
+                android:layout_marginTop="16dp"
+                app:title="给出的钱" />
+
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.Material3.CardView.Outlined"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/card_title"
+                        style="@style/TextAppearance.Material3.TitleLarge"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="联系方式"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.google.android.material.card.MaterialCardView
+                        style="@style/Widget.Material3.CardView.Elevated"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:padding="16dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/card_title">
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/list_empty"
+                                style="@style/TextAppearance.Material3.BodyLarge"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:padding="32dp"
+                                android:text="无内容"
+                                android:visibility="gone" />
+
+                            <TextView
+                                android:id="@+id/list_phone_title"
+                                style="@style/TextAppearance.Material3.TitleMedium"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="@dimen/fab_margin"
+                                android:text="电话" />
+
+                            <TextView
+                                style="@style/TextAppearance.Material3.TitleSmall"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/fab_margin"
+                                android:text="点击可复制" />
+
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/list_phone"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="16dp" />
+
+                            <TextView
+                                android:id="@+id/list_email_title"
+                                style="@style/TextAppearance.Material3.TitleMedium"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="@dimen/fab_margin"
+                                android:text="邮箱" />
+
+                            <TextView
+                                style="@style/TextAppearance.Material3.TitleSmall"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/fab_margin"
+                                android:text="点击可复制" />
+
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/list_email"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="16dp" />
+
+                            <Button
+                                android:id="@+id/add"
+                                style="@style/Widget.Material3.Button.Icon"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal|bottom"
+                                android:text="@string/other_gave_money"
+                                app:icon="@drawable/ic_add" />
+
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 

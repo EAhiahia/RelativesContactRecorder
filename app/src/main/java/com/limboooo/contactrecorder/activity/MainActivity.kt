@@ -5,12 +5,15 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.fragment.app.proxyFragmentFactory
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import com.github.fragivity.loadRoot
 import com.limboooo.contactrecorder.R
 import com.limboooo.contactrecorder.databinding.ActivityMainBinding
 import com.limboooo.contactrecorder.fragment.FragmentContactList
 import com.limboooo.contactrecorder.repository.ProjectViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 class MainActivity : AppCompatActivity() {
@@ -24,6 +27,11 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         runBlocking {
             viewModel.invalidateMainList()
+        }
+        lifecycleScope.launch(Dispatchers.IO) {
+            if (!viewModel.getInserted()) {
+                viewModel.insertOriginDownList()
+            }
         }
         WindowCompat.setDecorFitsSystemWindows(window, false)
         proxyFragmentFactory()

@@ -1,20 +1,32 @@
 package com.limboooo.contactrecorder.repository
 
+import android.content.Context
 import android.util.Log
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.fragment.R
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.fragivity.NavOptions
+import com.limboooo.contactrecorder.activity.ProjectApplication
 import com.limboooo.contactrecorder.repository.room.ProjectDatabase
 import com.limboooo.contactrecorder.repository.room.entity.normal.Names
 import com.limboooo.contactrecorder.repository.room.entity.normal.Things
-import com.limboooo.contactrecorder.repository.room.entity.whole.*
+import com.limboooo.contactrecorder.repository.room.entity.whole.Emails
+import com.limboooo.contactrecorder.repository.room.entity.whole.Phones
+import com.limboooo.contactrecorder.repository.room.entity.whole.RelativesBaseInfo
+import com.limboooo.contactrecorder.repository.room.entity.whole.RelativesInfoWhole
+import com.limboooo.contactrecorder.tools.showShortToast
 import com.nlf.calendar.Solar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
@@ -32,8 +44,10 @@ fun NavOptions.initAnimator() {
     popExitAnim = R.animator.fragment_close_exit
 }
 
-const val normalDataOwnerId = 1000000
+const val normalDataOwnerId = 1000000L
 
+val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
+val INSERT_DEFAULT_DOWN_LIST = booleanPreferencesKey("inserted")
 
 /**
  * 每次更新mutableStateFlow.value会导致走流程，相当于emit
@@ -41,37 +55,33 @@ const val normalDataOwnerId = 1000000
  */
 class ProjectViewModel : ViewModel() {
 
+    var targetDataBackup: RelativesInfoWhole? = null
+
     //用于保存新的用户或者更新
     lateinit var targetData: RelativesInfoWhole
 
-    //用于RecyclerView保存
-    var inputPhone = mutableListOf(Phones(0, 0, ""))
-    var inputEmail = mutableListOf(Emails(0, 0, ""))
-    var inputThingReceived = mutableListOf(MoneyReceived(0, 0, "",  "", ""))
-    var inputThingGave = mutableListOf(MoneyGave(0, 0, "",  "", ""))
-    var inputName = ""
+    suspend fun getInserted(): Boolean {
+        return ProjectApplication.context.dataStore.data.map {
+            it[INSERT_DEFAULT_DOWN_LIST] ?: false
+        }.first()
+    }
 
     var today: Solar = Solar.fromDate(Date())
 
-    //用于RecyclerView判断是否有输入
-    var isHaveContent = false
-
     //判断是否是删除模式，控制UI显示
-    var deleteMode: Boolean = false
+    var deleteMode = MutableLiveData(false)
 
     //数据库的操作列表
     private val dao by lazy { ProjectDatabase.getDatabase().projectDao() }
 
     //主页面的list
-    private val _mainListData: MutableStateFlow<List<RelativesBaseInfo>> =
-        MutableStateFlow(listOf())
-    val mainListData = _mainListData.asStateFlow()
+    val mainListData: MutableStateFlow<MutableList<RelativesBaseInfo>> =
+        MutableStateFlow(mutableListOf())
 
-    //用于辅助删除撤销操作
-    val mainListDataBackup by lazy { mutableListOf<RelativesBaseInfo>() }
+    var mainListDataBackup = mutableListOf<RelativesBaseInfo>()
 
     //被删除的名单
-    val deletedList: MutableList<RelativesBaseInfo> by lazy { mutableListOf() }
+    val deletedList = MutableLiveData(mutableListOf<RelativesBaseInfo>())
 
     //用于下拉栏
     lateinit var names: MutableList<String>
@@ -86,7 +96,7 @@ class ProjectViewModel : ViewModel() {
             launchDownList()
             launch {
                 dao.getAllBaseInfo().collect {
-                    _mainListData.value = it
+                    mainListData.value = it
                 }
             }
         }
@@ -130,32 +140,30 @@ class ProjectViewModel : ViewModel() {
         }
     }
 
-    private fun resetTargetData(): RelativesInfoWhole {
-        return RelativesInfoWhole(
-            RelativesBaseInfo(0, "", 0, 0),
-            mutableListOf(Phones(0, 0, "")),
-            mutableListOf(Emails(0, 0, "")),
-            mutableListOf(MoneyReceived(0, 0, "$today   ${today.lunar}", "", "")),
-            mutableListOf(MoneyReceivedBack(0, 0, "$today   ${today.lunar}", "", "")),
-            mutableListOf(MoneyGave(0, 0, "$today   ${today.lunar}", "", "")),
-            mutableListOf(MoneyGaveBack(0, 0, "$today   ${today.lunar}", "", ""))
-        )
+    suspend fun insertOriginDownList() {
+        dao.insertOriginDownList()
+        ProjectApplication.context.dataStore.edit {
+            it[INSERT_DEFAULT_DOWN_LIST] = true
+        }
     }
 
     fun saveAll() {
-        if (deletedList.isEmpty()) {
+        if (deletedList.value!!.isEmpty()) {
             return
         }
         viewModelScope.launch(Dispatchers.IO) {
-            //todo 从全部列表中删除
-            deletedList.forEach {
+            deletedList.value!!.forEach {
                 dao.deleteOneUser(it)
+            }
+            deletedList.value!!.clear()
+            launch(Dispatchers.Main) {
+                "保存完成".showShortToast()
             }
         }
     }
 
     fun saveTarget() {
-        //todo 调用dao的update和add
+        targetData.toString().showLog()
         dao.insertOneUser(targetData)
     }
 
@@ -165,50 +173,48 @@ class ProjectViewModel : ViewModel() {
         }
     }
 
-    fun invalidateMainList() {
-        viewModelScope.launch {
-            _mainListData.value = dao.getAllBaseInfo().first()
-        }
+    suspend fun invalidateMainList() {
+        mainListData.value = dao.getAllBaseInfo().first()
     }
 
     fun saveDownList(name: String) {
-        inputPhone.forEachIndexed { index, phone ->
-            if (index != inputPhone.size - 1 && !phones.contains(phone.phone))
+        targetData.phones.forEach {
+            if (!phones.contains(it.phone))
                 dao.insertPhone(
                     Phones(
                         0,
                         normalDataOwnerId,
-                        phone.phone
+                        it.phone
                     )
                 )
         }
-        inputEmail.forEachIndexed { index, email ->
-            if (index != inputEmail.size - 1 && !emails.contains(email.email))
+        targetData.emails.forEach {
+            if (!emails.contains(it.email))
                 dao.insertEmail(
                     Emails(
                         0,
                         normalDataOwnerId,
-                        email.email
+                        it.email
                     )
                 )
         }
-        inputThingGave.forEachIndexed { index, thing ->
-            if (index != inputThingGave.size - 1 && !things.contains(thing.thing))
+        targetData.moneyReceived.forEach {
+            if (!things.contains(it.thing))
                 dao.insertThing(
                     Things(
                         0,
                         normalDataOwnerId,
-                        thing.thing
+                        it.thing
                     )
                 )
         }
-        inputThingReceived.forEachIndexed { index, thing ->
-            if (index != inputThingReceived.size - 1 && !things.contains(thing.thing))
+        targetData.moneyGave.forEach {
+            if (!things.contains(it.thing))
                 dao.insertThing(
                     Things(
                         0,
                         normalDataOwnerId,
-                        thing.thing
+                        it.thing
                     )
                 )
         }
@@ -216,7 +222,7 @@ class ProjectViewModel : ViewModel() {
     }
 
     fun loadTargetDetail(position: Int) {
-        targetData = dao.getOneUser(mainListData.value[position].id)
+        targetData = dao.getOneUser(mainListData.value[position].id)!!
     }
 
     fun deleteTargetUser() {

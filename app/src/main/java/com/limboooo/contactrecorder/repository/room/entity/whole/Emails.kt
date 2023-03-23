@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class Emails(
-    @PrimaryKey(true) val id: Int,
-    var ownerId: Int,
-    val email: String
+    @PrimaryKey(true) val id: Long,
+    var ownerId: Long,
+    var email: String
 )
