@@ -50,7 +50,6 @@ class FragmentContactDetail : Fragment() {
         }
         initContactInformation()
         initToolbar()
-        //自动加载viewModel.targetData的数据
         initCardReceived()
         initCardGave()
     }
@@ -74,12 +73,26 @@ class FragmentContactDetail : Fragment() {
                 notifyMoneyChanged = { type, money ->
                     if (type == DETAIL_RECEIVED) {
                         viewModel.targetData.baseInfo.moneyReceivedWhole += money
-                        binding.receivedAll.text =
-                            "累计收到${viewModel.targetData.baseInfo.moneyReceivedWhole}元"
+                        if(viewModel.targetData.baseInfo.moneyReceivedWhole==0){
+                            binding.listEmpty.visibility = View.VISIBLE
+                            binding.listContainer.visibility = View.GONE
+                        }else{
+                            binding.listEmpty.visibility = View.GONE
+                            binding.listContainer.visibility = View.VISIBLE
+                            binding.receivedAll.text =
+                                "累计收到${viewModel.targetData.baseInfo.moneyReceivedWhole}元"
+                        }
                     } else {
                         viewModel.targetData.baseInfo.moneyGaveWhole += money
-                        binding.receivedAll.text =
-                            "累计给出${viewModel.targetData.baseInfo.moneyGaveWhole}元"
+                        if(viewModel.targetData.baseInfo.moneyGaveWhole==0){
+                            binding.listEmpty.visibility = View.VISIBLE
+                            binding.listContainer.visibility = View.GONE
+                        }else{
+                            binding.listEmpty.visibility = View.GONE
+                            binding.listContainer.visibility = View.VISIBLE
+                            binding.receivedAll.text =
+                                "累计给出${viewModel.targetData.baseInfo.moneyGaveWhole}元"
+                        }
                     }
                 }
             }
@@ -94,12 +107,26 @@ class FragmentContactDetail : Fragment() {
                 notifyMoneyChanged = { type, money ->
                     if (type == DETAIL_RECEIVED) {
                         viewModel.targetData.baseInfo.moneyReceivedWhole += money
-                        binding.receivedAll.text =
-                            "累计收到${viewModel.targetData.baseInfo.moneyReceivedWhole}元"
+                        if(viewModel.targetData.baseInfo.moneyReceivedWhole==0){
+                            binding.listEmpty.visibility = View.VISIBLE
+                            binding.listContainer.visibility = View.GONE
+                        }else{
+                            binding.listEmpty.visibility = View.GONE
+                            binding.listContainer.visibility = View.VISIBLE
+                            binding.receivedAll.text =
+                                "累计收到${viewModel.targetData.baseInfo.moneyReceivedWhole}元"
+                        }
                     } else {
                         viewModel.targetData.baseInfo.moneyGaveWhole += money
-                        binding.receivedAll.text =
-                            "累计给出${viewModel.targetData.baseInfo.moneyGaveWhole}元"
+                        if(viewModel.targetData.baseInfo.moneyGaveWhole==0){
+                            binding.listEmpty.visibility = View.VISIBLE
+                            binding.listContainer.visibility = View.GONE
+                        }else{
+                            binding.listEmpty.visibility = View.GONE
+                            binding.listContainer.visibility = View.VISIBLE
+                            binding.receivedAll.text =
+                                "累计给出${viewModel.targetData.baseInfo.moneyGaveWhole}元"
+                        }
                     }
                 }
             }
@@ -149,12 +176,26 @@ class FragmentContactDetail : Fragment() {
                 notifyMoneyChanged = { type, money ->
                     if (type == DETAIL_RECEIVED) {
                         viewModel.targetData.baseInfo.moneyReceivedWhole += money
-                        binding.receivedAll.text =
-                            "累计收到${viewModel.targetData.baseInfo.moneyReceivedWhole}元"
+                        if(viewModel.targetData.baseInfo.moneyReceivedWhole==0){
+                            binding.listEmpty.visibility = View.VISIBLE
+                            binding.listContainer.visibility = View.GONE
+                        }else{
+                            binding.listEmpty.visibility = View.GONE
+                            binding.listContainer.visibility = View.VISIBLE
+                            binding.receivedAll.text =
+                                "累计收到${viewModel.targetData.baseInfo.moneyReceivedWhole}元"
+                        }
                     } else {
                         viewModel.targetData.baseInfo.moneyGaveWhole += money
-                        binding.receivedAll.text =
-                            "累计给出${viewModel.targetData.baseInfo.moneyGaveWhole}元"
+                        if(viewModel.targetData.baseInfo.moneyGaveWhole==0){
+                            binding.listEmpty.visibility = View.VISIBLE
+                            binding.listContainer.visibility = View.GONE
+                        }else{
+                            binding.listEmpty.visibility = View.GONE
+                            binding.listContainer.visibility = View.VISIBLE
+                            binding.receivedAll.text =
+                                "累计给出${viewModel.targetData.baseInfo.moneyGaveWhole}元"
+                        }
                     }
                 }
             }
@@ -170,12 +211,26 @@ class FragmentContactDetail : Fragment() {
                     notifyMoneyChanged = { type, money ->
                         if (type == DETAIL_RECEIVED) {
                             viewModel.targetData.baseInfo.moneyReceivedWhole += money
-                            binding.receivedAll.text =
-                                "累计收到${viewModel.targetData.baseInfo.moneyReceivedWhole}元"
+                            if(viewModel.targetData.baseInfo.moneyReceivedWhole==0){
+                                binding.listEmpty.visibility = View.VISIBLE
+                                binding.listContainer.visibility = View.GONE
+                            }else{
+                                binding.listEmpty.visibility = View.GONE
+                                binding.listContainer.visibility = View.VISIBLE
+                                binding.receivedAll.text =
+                                    "累计收到${viewModel.targetData.baseInfo.moneyReceivedWhole}元"
+                            }
                         } else {
                             viewModel.targetData.baseInfo.moneyGaveWhole += money
-                            binding.receivedAll.text =
-                                "累计给出${viewModel.targetData.baseInfo.moneyGaveWhole}元"
+                            if(viewModel.targetData.baseInfo.moneyGaveWhole==0){
+                                binding.listEmpty.visibility = View.VISIBLE
+                                binding.listContainer.visibility = View.GONE
+                            }else{
+                                binding.listEmpty.visibility = View.GONE
+                                binding.listContainer.visibility = View.VISIBLE
+                                binding.receivedAll.text =
+                                    "累计给出${viewModel.targetData.baseInfo.moneyGaveWhole}元"
+                            }
                         }
                     }
                 }

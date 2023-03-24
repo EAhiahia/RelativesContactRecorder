@@ -112,9 +112,7 @@ class DetailContentAdapter(
                             //通知更新金钱总数
                             notifyMoneyChanged.invoke(DETAIL_GAVE, -target.money.toInt())
                             //通知更新按钮是否可见
-                            if (viewModel.targetData.moneyGaveBack.isNotEmpty()) changeShowPaidVisibility.invoke(
-                                true
-                            )
+                            changeShowPaidVisibility.invoke(viewModel.targetData.moneyGaveBack.isNotEmpty())
                         }
                     }
                 }
@@ -143,9 +141,7 @@ class DetailContentAdapter(
                             //通知更新金钱总数
                             notifyMoneyChanged.invoke(DETAIL_GAVE, target.money.toInt())
                             //通知更新按钮是否可见
-                            if (viewModel.targetData.moneyGaveBack.isNotEmpty()) changeShowPaidVisibility.invoke(
-                                true
-                            )
+                            changeShowPaidVisibility.invoke(viewModel.targetData.moneyGaveBack.isNotEmpty())
                         }
                     }
                 }
@@ -174,9 +170,7 @@ class DetailContentAdapter(
                             //通知更新金钱总数
                             notifyMoneyChanged.invoke(DETAIL_RECEIVED, -target.money.toInt())
                             //通知更新按钮是否可见
-                            if (viewModel.targetData.moneyReceivedBack.isNotEmpty()) changeShowPaidVisibility.invoke(
-                                true
-                            )
+                            changeShowPaidVisibility.invoke(viewModel.targetData.moneyReceivedBack.isNotEmpty())
                         }
                     }
                 }
@@ -205,9 +199,7 @@ class DetailContentAdapter(
                             //通知更新金钱总数
                             notifyMoneyChanged.invoke(DETAIL_RECEIVED, target.money.toInt())
                             //通知更新按钮是否可见
-                            if (viewModel.targetData.moneyReceivedBack.isNotEmpty()) changeShowPaidVisibility.invoke(
-                                true
-                            )
+                            changeShowPaidVisibility.invoke(viewModel.targetData.moneyReceivedBack.isNotEmpty())
                         }
                     }
                 }

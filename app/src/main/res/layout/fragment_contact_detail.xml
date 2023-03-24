@@ -105,7 +105,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="@dimen/fab_margin"
-                                android:text="点击可复制" />
+                                android:text="点击可拨号" />
 
                             <androidx.recyclerview.widget.RecyclerView
                                 android:id="@+id/list_phone"

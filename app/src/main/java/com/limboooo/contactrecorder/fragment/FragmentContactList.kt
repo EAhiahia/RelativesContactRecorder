@@ -44,6 +44,7 @@ class FragmentContactList : Fragment() {
                         navigationIcon = null
                     }
                     myAdapter.submitList(viewModel.mainListDataBackup)
+                    viewModel.mainListData.value = viewModel.mainListDataBackup.toMutableList()
                     viewModel.mainListDataBackup.clear()
                     Toast.makeText(requireContext(), "已撤销所有修改", Toast.LENGTH_SHORT).show()
                     binding.contactList.children.forEach {
@@ -51,8 +52,6 @@ class FragmentContactList : Fragment() {
                     }
                     viewModel.deleteMode.value = false
                 } else {
-                    requireActivity().finish()
-                    viewModel.saveAll()
                     isEnabled = false
                     onBackPressed()
                 }
@@ -112,13 +111,13 @@ class FragmentContactList : Fragment() {
                 initAnimator()
             }
         }
-        binding.toolbar.menu.getItem(0).setOnMenuItemClickListener {
+        binding.toolbar.menu.findItem(R.id.save).setOnMenuItemClickListener {
             if (viewModel.deletedList.value!!.isEmpty()) {
                 "没有任何修改".showShortToast()
             } else {
                 viewModel.saveAll()
-                viewModel.deleteMode.value = false
             }
+            viewModel.deleteMode.value = false
             true
         }
         viewModel.deletedList.observe(viewLifecycleOwner) {

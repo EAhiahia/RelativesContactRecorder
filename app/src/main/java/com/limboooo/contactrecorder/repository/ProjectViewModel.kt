@@ -31,7 +31,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
 
-const val disableLog = false
+const val disableLog = true
 
 fun String.showLog(tag: String = "myapp") {
     if (!disableLog) Log.d(tag, this)
@@ -148,9 +148,6 @@ class ProjectViewModel : ViewModel() {
     }
 
     fun saveAll() {
-        if (deletedList.value!!.isEmpty()) {
-            return
-        }
         viewModelScope.launch(Dispatchers.IO) {
             deletedList.value!!.forEach {
                 dao.deleteOneUser(it)
