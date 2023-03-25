@@ -16,7 +16,6 @@ import com.limboooo.contactrecorder.fragment.FragmentContactDetail
 import com.limboooo.contactrecorder.repository.ProjectViewModel
 import com.limboooo.contactrecorder.repository.initAnimator
 import com.limboooo.contactrecorder.repository.room.entity.whole.RelativesBaseInfo
-import com.limboooo.contactrecorder.repository.showLog
 
 class ContactListAdapter(private val viewModel: ProjectViewModel) :
     ListAdapter<RelativesBaseInfo, ContactListAdapter.ListViewHolder>(DiffCallback) {
@@ -47,7 +46,7 @@ class ContactListAdapter(private val viewModel: ProjectViewModel) :
             binding.item.setOnClickListener {
                 it.navigator.push(FragmentContactDetail::class) {
                     initAnimator()
-                    arguments = bundleOf("position" to position)
+                    arguments = bundleOf("entity_id" to entity.id)
                 }
             }
             binding.item.setOnLongClickListener {
@@ -60,10 +59,8 @@ class ContactListAdapter(private val viewModel: ProjectViewModel) :
                 gave.text = "给出${entity.moneyGaveWhole}元"
                 deleteButton.setOnClickListener {
                     //用于撤销所有修改
-                    "before________${viewModel.mainListDataBackup}".showLog()
                     if (viewModel.mainListDataBackup.isEmpty()) viewModel.mainListDataBackup =
                         viewModel.mainListData.value.toMutableList()
-                    "after_________${viewModel.mainListDataBackup}".showLog()
                     viewModel.mainListData.value =
                         viewModel.mainListData.value.toMutableList().apply { remove(entity) }
                     viewModel.deletedList.value =

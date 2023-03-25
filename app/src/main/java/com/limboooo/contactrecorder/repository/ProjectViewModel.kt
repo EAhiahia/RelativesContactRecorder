@@ -31,7 +31,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
 
-const val disableLog = true
+const val disableLog = false
 
 fun String.showLog(tag: String = "myapp") {
     if (!disableLog) Log.d(tag, this)
@@ -218,8 +218,8 @@ class ProjectViewModel : ViewModel() {
         if (!names.contains(name)) dao.insertName(Names(0, normalDataOwnerId, name))
     }
 
-    fun loadTargetDetail(position: Int) {
-        targetData = dao.getOneUser(mainListData.value[position].id)!!
+    fun loadTargetDetail(id: Long) {
+        targetData = dao.getOneUser(id)!!
     }
 
     fun deleteTargetUser() {

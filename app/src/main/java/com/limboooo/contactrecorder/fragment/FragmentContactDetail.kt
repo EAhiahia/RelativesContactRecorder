@@ -46,7 +46,7 @@ class FragmentContactDetail : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         runBlocking {
-            viewModel.loadTargetDetail(requireArguments().getInt("position"))
+            viewModel.loadTargetDetail(requireArguments().getLong("entity_id", 0L))
         }
         initContactInformation()
         initToolbar()
@@ -73,10 +73,10 @@ class FragmentContactDetail : Fragment() {
                 notifyMoneyChanged = { type, money ->
                     if (type == DETAIL_RECEIVED) {
                         viewModel.targetData.baseInfo.moneyReceivedWhole += money
-                        if(viewModel.targetData.baseInfo.moneyReceivedWhole==0){
+                        if (viewModel.targetData.baseInfo.moneyReceivedWhole == 0) {
                             binding.listEmpty.visibility = View.VISIBLE
                             binding.listContainer.visibility = View.GONE
-                        }else{
+                        } else {
                             binding.listEmpty.visibility = View.GONE
                             binding.listContainer.visibility = View.VISIBLE
                             binding.receivedAll.text =
@@ -84,10 +84,10 @@ class FragmentContactDetail : Fragment() {
                         }
                     } else {
                         viewModel.targetData.baseInfo.moneyGaveWhole += money
-                        if(viewModel.targetData.baseInfo.moneyGaveWhole==0){
+                        if (viewModel.targetData.baseInfo.moneyGaveWhole == 0) {
                             binding.listEmpty.visibility = View.VISIBLE
                             binding.listContainer.visibility = View.GONE
-                        }else{
+                        } else {
                             binding.listEmpty.visibility = View.GONE
                             binding.listContainer.visibility = View.VISIBLE
                             binding.receivedAll.text =
@@ -107,10 +107,10 @@ class FragmentContactDetail : Fragment() {
                 notifyMoneyChanged = { type, money ->
                     if (type == DETAIL_RECEIVED) {
                         viewModel.targetData.baseInfo.moneyReceivedWhole += money
-                        if(viewModel.targetData.baseInfo.moneyReceivedWhole==0){
+                        if (viewModel.targetData.baseInfo.moneyReceivedWhole == 0) {
                             binding.listEmpty.visibility = View.VISIBLE
                             binding.listContainer.visibility = View.GONE
-                        }else{
+                        } else {
                             binding.listEmpty.visibility = View.GONE
                             binding.listContainer.visibility = View.VISIBLE
                             binding.receivedAll.text =
@@ -118,10 +118,10 @@ class FragmentContactDetail : Fragment() {
                         }
                     } else {
                         viewModel.targetData.baseInfo.moneyGaveWhole += money
-                        if(viewModel.targetData.baseInfo.moneyGaveWhole==0){
+                        if (viewModel.targetData.baseInfo.moneyGaveWhole == 0) {
                             binding.listEmpty.visibility = View.VISIBLE
                             binding.listContainer.visibility = View.GONE
-                        }else{
+                        } else {
                             binding.listEmpty.visibility = View.GONE
                             binding.listContainer.visibility = View.VISIBLE
                             binding.receivedAll.text =
@@ -176,10 +176,10 @@ class FragmentContactDetail : Fragment() {
                 notifyMoneyChanged = { type, money ->
                     if (type == DETAIL_RECEIVED) {
                         viewModel.targetData.baseInfo.moneyReceivedWhole += money
-                        if(viewModel.targetData.baseInfo.moneyReceivedWhole==0){
+                        if (viewModel.targetData.baseInfo.moneyReceivedWhole == 0) {
                             binding.listEmpty.visibility = View.VISIBLE
                             binding.listContainer.visibility = View.GONE
-                        }else{
+                        } else {
                             binding.listEmpty.visibility = View.GONE
                             binding.listContainer.visibility = View.VISIBLE
                             binding.receivedAll.text =
@@ -187,10 +187,10 @@ class FragmentContactDetail : Fragment() {
                         }
                     } else {
                         viewModel.targetData.baseInfo.moneyGaveWhole += money
-                        if(viewModel.targetData.baseInfo.moneyGaveWhole==0){
+                        if (viewModel.targetData.baseInfo.moneyGaveWhole == 0) {
                             binding.listEmpty.visibility = View.VISIBLE
                             binding.listContainer.visibility = View.GONE
-                        }else{
+                        } else {
                             binding.listEmpty.visibility = View.GONE
                             binding.listContainer.visibility = View.VISIBLE
                             binding.receivedAll.text =
@@ -211,10 +211,10 @@ class FragmentContactDetail : Fragment() {
                     notifyMoneyChanged = { type, money ->
                         if (type == DETAIL_RECEIVED) {
                             viewModel.targetData.baseInfo.moneyReceivedWhole += money
-                            if(viewModel.targetData.baseInfo.moneyReceivedWhole==0){
+                            if (viewModel.targetData.baseInfo.moneyReceivedWhole == 0) {
                                 binding.listEmpty.visibility = View.VISIBLE
                                 binding.listContainer.visibility = View.GONE
-                            }else{
+                            } else {
                                 binding.listEmpty.visibility = View.GONE
                                 binding.listContainer.visibility = View.VISIBLE
                                 binding.receivedAll.text =
@@ -222,10 +222,10 @@ class FragmentContactDetail : Fragment() {
                             }
                         } else {
                             viewModel.targetData.baseInfo.moneyGaveWhole += money
-                            if(viewModel.targetData.baseInfo.moneyGaveWhole==0){
+                            if (viewModel.targetData.baseInfo.moneyGaveWhole == 0) {
                                 binding.listEmpty.visibility = View.VISIBLE
                                 binding.listContainer.visibility = View.GONE
-                            }else{
+                            } else {
                                 binding.listEmpty.visibility = View.GONE
                                 binding.listContainer.visibility = View.VISIBLE
                                 binding.receivedAll.text =
@@ -304,6 +304,8 @@ class FragmentContactDetail : Fragment() {
         if (viewModel.targetData.phones.isEmpty() && viewModel.targetData.emails.isEmpty()) {
             binding.listEmpty.visibility = View.VISIBLE
             binding.listPhone.visibility = View.GONE
+            binding.call.visibility = View.GONE
+            binding.copy.visibility = View.GONE
             binding.listPhoneTitle.visibility = View.GONE
             binding.listEmail.visibility = View.GONE
             binding.listEmailTitle.visibility = View.GONE
@@ -314,6 +316,7 @@ class FragmentContactDetail : Fragment() {
             binding.listPhone.layoutManager = LinearLayoutManager(context)
         } else {
             binding.listPhone.visibility = View.GONE
+            binding.call.visibility = View.GONE
             binding.listPhoneTitle.visibility = View.GONE
         }
         if (viewModel.targetData.emails.isNotEmpty()) {
@@ -321,6 +324,7 @@ class FragmentContactDetail : Fragment() {
             binding.listEmail.layoutManager = LinearLayoutManager(context)
         } else {
             binding.listEmail.visibility = View.GONE
+            binding.copy.visibility = View.GONE
             binding.listEmailTitle.visibility = View.GONE
         }
         binding.add.setOnClickListener {
